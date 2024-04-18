@@ -8,7 +8,6 @@ import '../../core/ultils/helpers/convert_theme_data.dart';
 import '../../models/default_quote.dart';
 import '../../routings/routers.dart';
 import '../add_to_collection/add_to_collection_screen.dart';
-import '../add_to_collection/add_to_collection_screen2.dart';
 import 'home_controller.dart';
 import 'reminder_init_bottomsheet.dart';
 
@@ -210,8 +209,8 @@ class HomeScreen extends GetView<HomeController> {
       ),
       builder: (context) {
         return SizedBox(
-          height: context.height * 0.9,
-          child: AddToCollectionScreen2(
+          height: context.height,
+          child: AddToCollectionScreen(
               quoteId: quoteId, quoteSource: QuoteSource.defaultQuote),
         );
       },

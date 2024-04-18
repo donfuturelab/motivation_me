@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:motivation_me/features/add_to_collection/add_to_collection_screen.dart';
 import 'package:motivation_me/models/enum.dart';
 
@@ -41,7 +42,7 @@ void main() async {
 
   // InitialBindings();
   await di.init();
-  runApp(const MyApp());
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {

@@ -27,10 +27,7 @@ class ThemesScreen extends StatelessWidget {
           style: context.textTheme.displayLarge,
         ),
         backgroundColor: AppColors.black,
-        leading: BackButton(
-          color: Colors.white,
-          onPressed: () => Get.back(),
-        ),
+        automaticallyImplyLeading: false,
       ),
       body: Obx(
         () => _controller.isLoading

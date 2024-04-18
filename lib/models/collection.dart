@@ -1,9 +1,12 @@
-class Collection {
+import 'package:equatable/equatable.dart';
+
+class Collection extends Equatable {
   final int id;
   final String name;
   final int quoteCount;
 
-  Collection({required this.id, required this.name, required this.quoteCount});
+  const Collection(
+      {required this.id, required this.name, required this.quoteCount});
 
   // Create a Collection from JSON data
   factory Collection.fromMap(Map<String, dynamic> map) {
@@ -25,4 +28,7 @@ class Collection {
       quoteCount: quoteCount ?? this.quoteCount,
     );
   }
+
+  @override
+  List<Object?> get props => [id, name, quoteCount];
 }
