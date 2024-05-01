@@ -1,6 +1,10 @@
 import '../core/database/database_helper.dart';
 import '../models/quote_category.dart';
 
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'categories_repository.g.dart';
+
 class CategoriesRepository {
   final DatabaseHelper _dbHelper = DatabaseHelper.instance;
 
@@ -25,4 +29,9 @@ class CategoriesRepository {
       return QuoteCategory.fromMap(maps[i]);
     });
   }
+}
+
+@riverpod
+CategoriesRepository categoriesRepository(CategoriesRepositoryRef ref) {
+  return CategoriesRepository();
 }

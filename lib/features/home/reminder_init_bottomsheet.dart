@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../core/constant/colors.dart';
 import '../me/reminder_controller.dart';
@@ -17,7 +18,7 @@ class ReminderInitBottomsheet extends GetView<ReminderController> {
         title: Text('Reminders', style: context.textTheme.displayLarge),
         elevation: 0,
         leading: IconButton(
-            onPressed: () => Get.back(),
+            onPressed: () => GoRouter.of(context).pop(),
             icon: const Icon(
               Icons.close,
               color: AppColors.textColor,

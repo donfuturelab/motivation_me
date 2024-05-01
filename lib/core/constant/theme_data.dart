@@ -1,21 +1,23 @@
 import '../../models/enums/theme.dart';
 import '../../models/theme/quote_theme.dart';
 
-QuoteTheme theme1 = QuoteTheme(
+QuoteTheme theme1 = const QuoteTheme(
     themeID: 17,
     imageCode: '19_1',
     fontColor: '#FFFFFF',
     fontFamily: 'Merriweather',
     fontSize: 20,
     shadowColor: '#000000',
-    themeType: ThemeType.free);
+    themeType: ThemeType.free,
+    isSelected: true);
 
-QuoteTheme theme2 = QuoteTheme(
+QuoteTheme theme2 = const QuoteTheme(
     themeID: 18,
     imageCode: '19_2',
     fontColor: '#FFFFFF',
     fontFamily: 'Lobster',
     fontSize: 20,
     shadowColor: '#000000',
-    themeType: ThemeType.free);
+    themeType: ThemeType.free,
+    isSelected: true);
 final defaultTheme = [theme1, theme2];

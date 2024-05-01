@@ -1,5 +1,8 @@
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../core/database/database_helper.dart';
 import '../models/user_quote.dart';
+
+part 'user_quotes_repository.g.dart';
 
 class UserQuotesRepository {
   final DatabaseHelper _dbHelper = DatabaseHelper.instance;
@@ -38,3 +41,8 @@ SELECT dq.id, dq.quote_content, dq.author_id, dq.category_id, a.author_name,
           ORDER BY RANDOM()
           LIMIT 20
 */
+
+@riverpod
+UserQuotesRepository userQuotesRepository(UserQuotesRepositoryRef ref) {
+  return UserQuotesRepository();
+}

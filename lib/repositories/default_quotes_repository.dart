@@ -1,5 +1,8 @@
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../core/database/database_helper.dart';
 import '../models/default_quote.dart';
+
+part 'default_quotes_repository.g.dart';
 
 class DefaultQuotesRepository {
   final DatabaseHelper _dbHelper = DatabaseHelper.instance;
@@ -105,4 +108,10 @@ class DefaultQuotesRepository {
     }
     return mapQuotes;
   }
+}
+
+@riverpod
+DefaultQuotesRepository defaultQuotesRepository(
+    DefaultQuotesRepositoryRef ref) {
+  return DefaultQuotesRepository();
 }

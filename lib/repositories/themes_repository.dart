@@ -1,6 +1,9 @@
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../core/database/database_helper.dart';
 import '../models/enums/theme.dart';
 import '../models/theme/quote_theme.dart';
+
+part 'themes_repository.g.dart';
 
 class ThemesRepository {
   final DatabaseHelper _dbHelper = DatabaseHelper.instance;
@@ -62,3 +65,7 @@ class ThemesRepository {
     // );
   }
 }
+
+@riverpod
+ThemesRepository themesRepository(ThemesRepositoryRef ref) =>
+    ThemesRepository();

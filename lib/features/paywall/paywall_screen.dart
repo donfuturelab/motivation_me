@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:motivation_me/common_widgets/buttons.dart';
+import 'package:motivation_me/features/paywall/subscription_provider.dart';
 
 import '../../core/constant/colors.dart';
-import 'subscription_controller.dart';
 
-class PaywallScreen extends StatelessWidget {
-  final _subscriptionController = Get.find<SubscriptionController>();
-
-  PaywallScreen({super.key});
+class PaywallScreen extends ConsumerWidget {
+  const PaywallScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       padding: const EdgeInsets.only(top: 50),
       color: AppColors.black,
@@ -25,7 +24,7 @@ class PaywallScreen extends StatelessWidget {
             actions: [
               IconButton(
                 onPressed: () {
-                  Get.back();
+                  Navigator.of(context).pop();
                 },
                 icon: const ButtonToClose(),
               ),
@@ -69,12 +68,16 @@ class PaywallScreen extends StatelessWidget {
                 const Spacer(),
                 ElevatedButton(
                   onPressed: () async {
-                    final isSuccess =
-                        await _subscriptionController.purchaseSubscription();
+                    final isSuccess = await ref
+                        .read(subscriptionProvider.notifier)
+                        .purchaseSubscription();
                     if (isSuccess) {
-                      Get.back();
+                      if (context.mounted) {
+                        Navigator.of(context).pop();
+                      }
                     } else {
                       Get.snackbar('Error', 'Something went wrong');
+                      //show snackbar
                     }
                   },
                   child: Container(
@@ -92,8 +95,9 @@ class PaywallScreen extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(bottom: 20),
                   child: TextButton(
-                      onPressed: () =>
-                          _subscriptionController.restoreSubscription(),
+                      onPressed: () => ref
+                          .read(subscriptionProvider.notifier)
+                          .restoreSubscription(),
                       child: Text(
                         'Restore',
                         style: context.textTheme.displaySmall,

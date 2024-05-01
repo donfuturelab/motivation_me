@@ -1,11 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:motivation_me/features/add_to_collection/add_to_collection_screen.dart';
-import 'package:motivation_me/models/enum.dart';
 
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
@@ -18,8 +15,7 @@ import 'core/local_storage/quote_theme_storage.dart';
 import 'core/notification/notification_service.dart';
 import 'core/store_config/config_sdk.dart';
 import 'core/store_config/store_config.dart';
-import 'features/main_screen/main_screen.dart';
-import 'routings/app_pages.dart';
+import 'routings/app_go_pages.dart';
 
 void main() async {
   if (Platform.isIOS) {
@@ -51,9 +47,10 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
+    return MaterialApp.router(
       title: 'Motivation',
       debugShowCheckedModeBanner: false,
+      routerConfig: appRouters,
       theme: ThemeData(
         textTheme: const TextTheme(
           displayLarge: TextStyle(
@@ -77,8 +74,6 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: AppColors.main),
         useMaterial3: true,
       ),
-      getPages: AppPages.pages,
-      home: MainScreen(),
     );
   }
 }

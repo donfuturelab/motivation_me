@@ -1,3 +1,4 @@
+import 'package:equatable/equatable.dart';
 import 'package:get/get.dart';
 
 class UserQuoteMap {
@@ -17,20 +18,20 @@ class UserQuoteMap {
   }
 }
 
-class UserQuote {
+class UserQuote extends Equatable {
   final int id;
   final String quoteContent;
   // final String? authorName;
   // final String? categoryId;
-  final RxBool isLiked;
+  final bool isLiked;
   final DateTime createdAt;
 
-  UserQuote({
+  const UserQuote({
     required this.id,
     required this.quoteContent,
-    bool isLiked = false,
+    required this.isLiked,
     required this.createdAt,
-  }) : isLiked = RxBool(isLiked);
+  });
 
   factory UserQuote.fromMap(Map<String, dynamic> map) {
     return UserQuote(
@@ -44,11 +45,16 @@ class UserQuote {
     int? id,
     String? quoteContent,
     DateTime? createdAt,
+    bool? isLiked,
   }) {
     return UserQuote(
       id: id ?? this.id,
       quoteContent: quoteContent ?? this.quoteContent,
       createdAt: createdAt ?? this.createdAt,
+      isLiked: isLiked ?? this.isLiked,
     );
   }
+
+  @override
+  List<Object?> get props => [id, quoteContent, isLiked, createdAt];
 }

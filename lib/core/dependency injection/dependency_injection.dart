@@ -24,19 +24,19 @@ Future<void> init() async {
   Get.lazyPut(() => CollectionsRepository(), fenix: true);
   Get.lazyPut(() => SavesRepository(), fenix: true);
 
-  //controller
-  Get.lazyPut(
-      () => HomeController(dfQuotesRepo: Get.find(), likesRepo: Get.find()),
-      fenix: true);
-  Get.lazyPut(() => CreateQuoteController(userQuoteRepo: Get.find()),
-      fenix: true);
-  Get.lazyPut(
-      () =>
-          MyQuotesController(userQuoteRepo: Get.find(), likesRepo: Get.find()),
-      fenix: true);
-  Get.lazyPut(() => MainController(), fenix: true);
-  Get.lazyPut(() => ThemesController(themesRepo: Get.find()), fenix: true);
-  // Get.lazyPut(() => CategoryController(categoryRepo: Get.find()));
-  Get.lazyPut(() => ReminderController(), fenix: true);
-  Get.lazyPut(() => SubscriptionController(), fenix: true);
+  // //controller
+  // Get.lazyPut(
+  //     () => HomeController(dfQuotesRepo: Get.find(), likesRepo: Get.find()),
+  //     fenix: true);
+  // Get.lazyPut(() => CreateQuoteController(userQuoteRepo: Get.find()),
+  //     fenix: true);
+  // Get.lazyPut(
+  //     () =>
+  //         MyQuotesController(userQuoteRepo: Get.find(), likesRepo: Get.find()),
+  //     fenix: true);
+  // Get.lazyPut(() => MainController(), fenix: true);
+  // Get.lazyPut(() => ThemesController(themesRepo: Get.find()), fenix: true);
+  // // Get.lazyPut(() => CategoryController(categoryRepo: Get.find()));
+  // Get.lazyPut(() => ReminderController(), fenix: true);
+  // Get.lazyPut(() => SubscriptionController(), fenix: true);
 }

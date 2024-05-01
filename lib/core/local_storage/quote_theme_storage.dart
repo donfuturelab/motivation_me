@@ -1,6 +1,5 @@
 import 'package:get_storage/get_storage.dart';
-
-import '../../models/theme/quote_theme.dart';
+import 'package:motivation_me/models/theme/selected_theme.dart';
 import '../constant/theme_data.dart';
 
 class QuoteThemeStorage {
@@ -14,21 +13,21 @@ class QuoteThemeStorage {
     }
   }
 
-  List<QuoteTheme> getThemes() {
+  List<SelectedTheme> getThemes() {
     final themeMapList = _box.read<List>(_key) ?? [];
     return themeMapList
-        .map((themeMap) => QuoteTheme.fromMap(themeMap))
+        .map((themeMap) => SelectedTheme.fromMap(themeMap))
         .toList();
   }
 
-  Future<void> addTheme(QuoteTheme theme) async {
+  Future<void> addTheme(SelectedTheme theme) async {
     final themeMap = theme.toMap();
     final themeMapList = _box.read<List>(_key) ?? [];
     themeMapList.insert(0, themeMap);
     await _box.write(_key, themeMapList);
   }
 
-  Future<void> updateNewThemeList(List<QuoteTheme> themes) async {
+  Future<void> updateNewThemeList(List<SelectedTheme> themes) async {
     final themeMapList = themes.map((theme) => theme.toMap()).toList();
     await _box.write(_key, themeMapList);
   }

@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:motivation_me/common_widgets/buttons.dart';
 import 'package:motivation_me/common_widgets/circle_progress_bar.dart';
+import 'package:motivation_me/common_widgets/snackbar.dart';
 import 'package:motivation_me/core/extensions/async_value_extension.dart';
+import 'package:motivation_me/features/main_screen/selected_tab_provider.dart';
 
+import '../../routings/app_routes.dart';
 import '/features/create_quote/create_quote_provider.dart';
 import '/features/my_quotes/my_quotes_screen.dart';
 
@@ -53,18 +57,20 @@ class CreateQuoteScreen extends HookConsumerWidget {
                         ? null
                         : () async {
                             if (textController.text.isEmpty) {
-                              Get.snackbar('Error', 'Quote cannot be empty',
-                                  colorText: Colors.white,
-                                  snackPosition: SnackPosition.BOTTOM);
+                              showSnackbar(context,
+                                  content: 'Quote should not be empty',
+                                  textColor: AppColors.textColor);
                               return;
                             } else {
                               await ref
                                   .read(createQuoteControllerProvider.notifier)
                                   .saveQuote(textController.text);
-
-                              // Navigator.of(context).pus
-
-                              // await _myQuotesController.refreshData();
+                              if (context.mounted) {
+                                ref
+                                    .read(selectedTabProvider.notifier)
+                                    .selectTab(1);
+                                Navigator.of(context).pop();
+                              }
                             }
                           },
                     child: Container(

@@ -1,5 +1,8 @@
 import 'dart:async';
 
+import 'package:equatable/equatable.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -11,102 +14,131 @@ import '../../models/theme/quote_theme.dart';
 import '../../repositories/default_quotes_repository.dart';
 import '../../repositories/likes_repository.dart';
 
-class HomeController extends GetxController with GetTickerProviderStateMixin {
-  final DefaultQuotesRepository dfQuotesRepo;
-  final LikesRepository likesRepo;
+part 'home_controller.g.dart';
 
-  HomeController({required this.dfQuotesRepo, required this.likesRepo});
+// class HomeController2 extends GetxController with GetTickerProviderStateMixin {
+//   final DefaultQuotesRepository dfQuotesRepo;
+//   final LikesRepository likesRepo;
 
-  final _box = QuoteThemeStorage();
+//   HomeController({required this.dfQuotesRepo, required this.likesRepo});
 
-  final RxBool _isLoading = true.obs;
-  bool get isLoading => _isLoading.value;
+//   final _box = QuoteThemeStorage();
 
-  final RxList<DefaultQuote> _quotes = <DefaultQuote>[].obs;
-  List<DefaultQuote> get quotes => _quotes.toList();
+//   final RxBool _isLoading = true.obs;
+//   bool get isLoading => _isLoading.value;
 
-  AnimationController? _animationController;
-  AnimationController? get animationController => _animationController;
-  // Animation<double>? _scaleAnimation;
-  Animation<double>? scaleAnimation;
+//   final RxList<DefaultQuote> _quotes = <DefaultQuote>[].obs;
+//   List<DefaultQuote> get quotes => _quotes.toList();
 
-  final _quoteThemes = <QuoteTheme>[];
-  List<QuoteTheme> get quoteThemes => _quoteThemes;
+//   AnimationController? _animationController;
+//   AnimationController? get animationController => _animationController;
+//   // Animation<double>? _scaleAnimation;
+//   Animation<double>? scaleAnimation;
 
-  final RxString _selectedCategoryName = 'General'.obs;
-  String get selectedCategoryName => _selectedCategoryName.value;
+//   final _quoteThemes = <QuoteTheme>[];
+//   List<QuoteTheme> get quoteThemes => _quoteThemes;
 
-  final RxBool isShowInitReminder = false.obs;
+//   final RxString _selectedCategoryName = 'General'.obs;
+//   String get selectedCategoryName => _selectedCategoryName.value;
 
-  late Timer _timer;
+//   final RxBool isShowInitReminder = false.obs;
 
+//   late Timer _timer;
+
+//   @override
+//   void onInit() {
+//     super.onInit();
+//     _quoteThemes.addAll(_box.getThemes()); //get all themes from local storage
+//     _getRandomQuotesByCategory(ConfigurationStorage
+//         .getSelectedCategoryId()); //get quotes by selected category
+//     _animationController =
+//         AnimationController(vsync: this, duration: const Duration(seconds: 10));
+//     scaleAnimation =
+//         Tween<double>(begin: 1, end: 1.2).animate(_animationController!);
+//     _animationController!.forward();
+
+//     // Show reminder init bottomsheet after 30 second if user not set init reminder
+//     if (!ConfigurationStorage.getIsSetInitReminder()) {
+//       _timer = Timer(const Duration(seconds: 15), () {
+//         isShowInitReminder.value = true;
+//       });
+//     }
+//   }
+
+//   @override
+//   void onClose() {
+//     _animationController!.dispose();
+//     _timer.cancel();
+//     super.onClose();
+//   }
+
+//   // Future<void> _getRandomQuotes() async {
+//   //   _isLoading.value = true;
+//   //   final List<DefaultQuote> quotes = await dfQuotesRepo.getRandomQuotes();
+//   //   _quotes.addAll(quotes);
+//   //   _isLoading.value = false;
+//   // }
+//   Future<void> _getRandomQuotesByCategory(int categoryId) async {
+//     _isLoading.value = true;
+//     final List<DefaultQuote> quotes =
+//         await dfQuotesRepo.getQuotesByCategory(categoryId);
+//     _quotes.addAll(quotes);
+//     _isLoading.value = false;
+//   }
+
+//   Future<void> updateNewQuotesByCategory(
+//       {required int categoryId, required String categoryName}) async {
+//     _quotes.clear();
+//     await _getRandomQuotesByCategory(categoryId);
+//     _selectedCategoryName.value = categoryName;
+//   }
+
+//   void resetScaleAnimation() {
+//     _animationController!.reset();
+//     _animationController!.forward();
+//   }
+
+//   Future<void> toggleLikeQuote(DefaultQuote quote, int index) async {
+//     if (quote.isLiked) {
+//       await likesRepo.unlikeQuote(
+//           quoteId: quote.id, quoteSource: QuoteSource.defaultQuote);
+//     } else {
+//       await likesRepo.likeQuote(
+//           quoteId: quote.id, quoteSource: QuoteSource.defaultQuote);
+//     }
+//     _quotes[index] = quote.copyWith(isLiked: !quote.isLiked);
+//     // _quotes.refresh();
+//   }
+
+//   void updateQuoteThemes(List<QuoteTheme> themes) {
+//     _quoteThemes.clear();
+//     _quoteThemes.addAll(themes);
+//   }
+// }
+
+@riverpod
+class HomeController extends _$HomeController {
   @override
-  void onInit() {
-    super.onInit();
-    _quoteThemes.addAll(_box.getThemes()); //get all themes from local storage
-    _getRandomQuotesByCategory(ConfigurationStorage
-        .getSelectedCategoryId()); //get quotes by selected category
-    _animationController =
-        AnimationController(vsync: this, duration: const Duration(seconds: 10));
-    scaleAnimation =
-        Tween<double>(begin: 1, end: 1.2).animate(_animationController!);
-    _animationController!.forward();
-
-    // Show reminder init bottomsheet after 30 second if user not set init reminder
-    if (!ConfigurationStorage.getIsSetInitReminder()) {
-      _timer = Timer(const Duration(seconds: 15), () {
-        isShowInitReminder.value = true;
-      });
-    }
-  }
-
-  @override
-  void onClose() {
-    _animationController!.dispose();
-    _timer.cancel();
-    super.onClose();
-  }
-
-  // Future<void> _getRandomQuotes() async {
-  //   _isLoading.value = true;
-  //   final List<DefaultQuote> quotes = await dfQuotesRepo.getRandomQuotes();
-  //   _quotes.addAll(quotes);
-  //   _isLoading.value = false;
-  // }
-  Future<void> _getRandomQuotesByCategory(int categoryId) async {
-    _isLoading.value = true;
-    final List<DefaultQuote> quotes =
-        await dfQuotesRepo.getQuotesByCategory(categoryId);
-    _quotes.addAll(quotes);
-    _isLoading.value = false;
-  }
-
-  Future<void> updateNewQuotesByCategory(
-      {required int categoryId, required String categoryName}) async {
-    _quotes.clear();
-    await _getRandomQuotesByCategory(categoryId);
-    _selectedCategoryName.value = categoryName;
-  }
-
-  void resetScaleAnimation() {
-    _animationController!.reset();
-    _animationController!.forward();
+  FutureOr<List<DefaultQuote>> build() async {
+    final List<DefaultQuote> quotes = await ref
+        .read(defaultQuotesRepositoryProvider)
+        .getQuotesByCategory(ConfigurationStorage.getSelectedCategoryId());
+    return quotes;
   }
 
   Future<void> toggleLikeQuote(DefaultQuote quote, int index) async {
+    state = const AsyncLoading();
     if (quote.isLiked) {
-      await likesRepo.unlikeQuote(
-          quoteId: quote.id, quoteSource: QuoteSource.defaultQuote);
+      await ref
+          .read(likesRepositoryProvider)
+          .unlikeQuote(quoteId: quote.id, quoteSource: QuoteSource.userQuote);
     } else {
-      await likesRepo.likeQuote(
-          quoteId: quote.id, quoteSource: QuoteSource.defaultQuote);
+      await ref
+          .read(likesRepositoryProvider)
+          .likeQuote(quoteId: quote.id, quoteSource: QuoteSource.userQuote);
     }
-    _quotes[index] = quote.copyWith(isLiked: !quote.isLiked);
-    // _quotes.refresh();
-  }
-
-  void updateQuoteThemes(List<QuoteTheme> themes) {
-    _quoteThemes.clear();
-    _quoteThemes.addAll(themes);
+    List<DefaultQuote> quoteList = state.valueOrNull!;
+    quoteList[index] = quote.copyWith(isLiked: !quote.isLiked);
+    state = AsyncData(quoteList);
   }
 }

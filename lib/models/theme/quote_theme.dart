@@ -1,8 +1,8 @@
-import 'package:get/get.dart';
+import 'package:equatable/equatable.dart';
 
 import '../enums/theme.dart';
 
-class QuoteTheme {
+class QuoteTheme extends Equatable {
   final int themeID;
   final String imageCode;
   final String fontFamily;
@@ -10,9 +10,9 @@ class QuoteTheme {
   final int? fontSize;
   final String? shadowColor;
   final ThemeType themeType;
-  final RxBool isSelected;
+  final bool isSelected;
 
-  QuoteTheme({
+  const QuoteTheme({
     required this.themeID,
     required this.imageCode,
     required this.fontFamily,
@@ -20,10 +20,8 @@ class QuoteTheme {
     this.fontSize,
     this.shadowColor,
     required this.themeType,
-    bool isSelected =
-        false, //cai nay khong can dung this vi no khong phai la isSelected cua class nay
-  }) : isSelected = RxBool(
-            isSelected); //this is argument so using initializing function to convert to RxBool
+    required this.isSelected,
+  }); //this is argument so using initializing function to convert to RxBool
 
   Map<String, dynamic> toMap() {
     return {
@@ -44,7 +42,10 @@ class QuoteTheme {
       fontColor: map['font_color'],
       fontSize: map['font_size'],
       shadowColor: map['shadow_color'],
-      themeType: stringToThemeType(map['theme_type'] ?? 'free'),
+      themeType: stringToThemeType(
+        map['theme_type'] ?? 'free',
+      ),
+      isSelected: false,
     );
   }
 
@@ -67,7 +68,19 @@ class QuoteTheme {
       fontSize: fontSize ?? this.fontSize,
       shadowColor: shadowColor ?? this.shadowColor,
       themeType: themeType ?? this.themeType,
-      isSelected: isSelected ?? this.isSelected.value,
+      isSelected: isSelected ?? this.isSelected,
     );
   }
+
+  @override
+  List<Object?> get props => [
+        themeID,
+        imageCode,
+        fontFamily,
+        fontColor,
+        fontSize,
+        shadowColor,
+        themeType,
+        isSelected,
+      ];
 }

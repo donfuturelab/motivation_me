@@ -27,14 +27,14 @@ class CircleProgressBarState extends State<CircleProgressBar> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.main,
+      backgroundColor: AppColors.black,
       body: _isMounted
           ? const Center(
               child: SizedBox(
                 width: 50,
                 height: 50,
                 child: CircularProgressIndicator(
-                  color: AppColors.main,
+                  color: AppColors.textGreyColor,
                 ),
               ),
             )

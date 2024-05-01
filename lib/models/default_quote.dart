@@ -1,4 +1,6 @@
-class DefaultQuote {
+import 'package:equatable/equatable.dart';
+
+class DefaultQuote extends Equatable {
   final int id;
   final String quoteContent;
   final int? authorId;
@@ -7,7 +9,7 @@ class DefaultQuote {
   final int categoryId;
   final bool isLiked;
 
-  DefaultQuote(
+  const DefaultQuote(
       {required this.id,
       required this.quoteContent,
       this.authorId,
@@ -44,4 +46,8 @@ class DefaultQuote {
         categoryId: categoryId ?? this.categoryId,
         isLiked: isLiked ?? this.isLiked);
   }
+
+  @override
+  List<Object?> get props =>
+      [id, quoteContent, authorId, authorName, categoryId, isLiked];
 }

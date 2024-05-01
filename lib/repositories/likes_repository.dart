@@ -1,8 +1,12 @@
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
 import 'package:sqflite/sqflite.dart';
 
 import '../core/database/database_helper.dart';
 import '../core/ultils/helpers/convert_datetime.dart';
 import '../models/enum.dart';
+
+part 'likes_repository.g.dart';
 
 class LikesRepository {
   final DatabaseHelper _dbHelper = DatabaseHelper.instance;
@@ -20,8 +24,6 @@ class LikesRepository {
       },
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
-
-    print('like quote successful creating $quoteId');
   }
 
   //create function to record unlike in likes table
@@ -58,8 +60,8 @@ class LikesRepository {
 }
 
 //get likes from 02 tables
-// SELECT 
-//     CASE 
+// SELECT
+//     CASE
 //         WHEN l.quote_source = 'default' THEN dq.quote_content
 //         WHEN l.quote_source = 'user' THEN ucq.quote_content
 //     END as quote_content,
@@ -70,16 +72,20 @@ class LikesRepository {
 // ORDER BY l.created_at DESC
 // LIMIT 30 OFFSET [Page_Number * 30];
 
-
-// SELECT q.*, l.created_at 
+// SELECT q.*, l.created_at
 // FROM default_quotes q
 // JOIN likes l ON q.id = l.quote_id AND l.quote_source = 'default'
 
 // UNION
 
-// SELECT q.*, l.created_at 
+// SELECT q.*, l.created_at
 // FROM user_created_quotes q
 // JOIN likes l ON q.id = l.quote_id AND l.quote_source = 'user_created'
 
 // ORDER BY created_at DESC
 // LIMIT 30 OFFSET [Page_Number * 30];
+
+@riverpod
+LikesRepository likesRepository(LikesRepositoryRef ref) {
+  return LikesRepository();
+}
