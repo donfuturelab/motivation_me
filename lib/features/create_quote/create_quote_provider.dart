@@ -1,4 +1,5 @@
 //import riverpod annotations, riverpod
+import 'package:motivation_me/features/my_quotes/my_quote_controller.dart';
 import 'package:motivation_me/repositories/user_quotes_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -19,6 +20,8 @@ class CreateQuoteController extends _$CreateQuoteController {
     );
     state = const AsyncLoading();
     state = await AsyncValue.guard(() => _userQuoteRepo.createQuote(quoteMap));
+
+    ref.invalidate(myQuoteControllerProvider);
   }
 }
 // Future<void> saveQuote(SaveQuoteRef ref, {required String quote}) async {

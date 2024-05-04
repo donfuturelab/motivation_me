@@ -60,11 +60,16 @@ class MeScreen extends StatelessWidget {
   }
 
   void showReminderBottomSheet(BuildContext context) {
-    Get.bottomSheet(
-      SizedBox(
-        height: context.height * 0.92,
-        child: const RemiderBottomSheet(),
-      ),
+    showModalBottomSheet(
+      context: context,
+      builder: (_) {
+        final padding = MediaQuery.of(context).padding.top;
+        return Container(
+          color: AppColors.black,
+          padding: EdgeInsets.only(top: padding),
+          child: const RemiderBottomSheet(),
+        );
+      },
       backgroundColor: AppColors.black,
       isScrollControlled: true,
       clipBehavior: Clip.antiAlias,

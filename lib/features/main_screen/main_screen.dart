@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:go_router/go_router.dart';
+
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '/features/main_screen/selected_tab_provider.dart';
-import 'package:path/path.dart';
 
 import '../../core/constant/colors.dart';
-import '../../routings/app_routes.dart';
+
 import '../create_quote/create_quote_screen.dart';
 import '../home/home_screen.dart';
 import '../me/me_screen.dart';
@@ -20,10 +18,10 @@ class MainScreen extends ConsumerWidget {
   // final _mainController = Get.find<MainController>();
 
   final List<Widget> _screen = <Widget>[
-    HomeScreen(),
-    MyQuotesScreen(),
+    const HomeScreen(),
+    const MyQuotesScreen(),
     // const CreateQuoteScreen(),
-    ThemesScreen(),
+    const ThemesScreen(),
     const MeScreen()
   ];
 
@@ -38,16 +36,18 @@ class MainScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedTab = ref.watch(selectedTabProvider);
 
+    final statusBarHeigh = MediaQuery.of(context).padding.top;
+
     //create bottomsheet for create quote screen
-    void showBottomSheet() {
+    void showCreateQuoteBottomSheet() {
       showModalBottomSheet(
         isScrollControlled: true,
         context: context,
         builder: (context) {
-          return SizedBox(
-            height: MediaQuery.of(context).size.height,
-            child: const CreateQuoteScreen(),
-          );
+          return Container(
+              color: AppColors.black,
+              padding: EdgeInsets.only(top: statusBarHeigh),
+              child: const CreateQuoteScreen());
         },
       );
     }
@@ -137,7 +137,7 @@ class MainScreen extends ConsumerWidget {
               height: 40,
               child: FloatingActionButton(
                 onPressed: () {
-                  showBottomSheet();
+                  showCreateQuoteBottomSheet();
                 },
                 backgroundColor: AppColors.middleBlack.withOpacity(0.8),
                 shape: const CircleBorder(),

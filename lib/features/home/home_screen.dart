@@ -74,26 +74,6 @@ class HomeScreen extends HookConsumerWidget {
     print('category: ${category.name}');
     print('themes: ${themes.length}');
 
-    // ever(controller.isShowInitReminder, (callback) {
-    //   if (controller.isShowInitReminder.value) {
-    //     Get.bottomSheet(
-    //       SizedBox(
-    //         height: context.height * 0.5,
-    //         child: const ReminderInitBottomsheet(),
-    //       ),
-    //       backgroundColor: AppColors.black,
-    //       isScrollControlled: true,
-    //       clipBehavior: Clip.antiAlias,
-    //       shape: const RoundedRectangleBorder(
-    //         borderRadius: BorderRadius.only(
-    //           topLeft: Radius.circular(20),
-    //           topRight: Radius.circular(20),
-    //         ),
-    //       ),
-    //     );
-    //   }
-    // });
-
     return Scaffold(
       resizeToAvoidBottomInset: true,
       body: quotes.when(
@@ -169,27 +149,7 @@ class HomeScreen extends HookConsumerWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          IconButton(
-                            onPressed: () => ref
-                                .read(homeControllerProvider.notifier)
-                                .toggleLikeQuote(quote, index),
-                            icon: Icon(
-                              quote.isLiked
-                                  ? Icons.favorite
-                                  : Icons.favorite_border,
-                              color: Colors.white,
-                              size: 30,
-                            ),
-                          ),
-                          const SizedBox(width: 10),
-                          IconButton(
-                            onPressed: () {},
-                            icon: const Icon(
-                              Icons.share,
-                              color: Colors.white,
-                              size: 30,
-                            ),
-                          ),
+                          FavoriteButton(quote: quote, index: index),
                           const SizedBox(width: 10),
                           IconButton(
                             onPressed: () {

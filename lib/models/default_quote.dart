@@ -44,6 +44,7 @@ class DefaultQuote extends Equatable {
         id: id ?? this.id,
         quoteContent: quoteContent ?? this.quoteContent,
         categoryId: categoryId ?? this.categoryId,
+        authorName: authorName ?? this.authorName,
         isLiked: isLiked ?? this.isLiked);
   }
 

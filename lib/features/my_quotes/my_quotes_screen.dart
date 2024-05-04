@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:motivation_me/features/themes/selected_theme_provider.dart';
+import 'package:motivation_me/models/user_quote.dart';
 
 import '../../common_widgets/circle_progress_bar.dart';
 import '../../core/constant/colors.dart';
@@ -131,6 +132,7 @@ class MyQuotesScreen extends HookConsumerWidget {
                           // ),
                           Column(
                             mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
                               Padding(
                                 padding:
@@ -162,31 +164,20 @@ class MyQuotesScreen extends HookConsumerWidget {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  IconButton(
-                                      onPressed: () => ref
-                                          .read(myQuoteControllerProvider
-                                              .notifier)
-                                          .toggleLikeQuote(quote, index),
-                                      icon: quote.isLiked
-                                          ? const Icon(
-                                              Icons.favorite,
-                                              color: Colors.white,
-                                              size: 30,
-                                            )
-                                          : const Icon(
-                                              Icons.favorite_border,
-                                              color: Colors.white,
-                                              size: 30,
-                                            )),
-                                  const SizedBox(width: 10),
-                                  IconButton(
-                                    onPressed: () {},
-                                    icon: const Icon(
-                                      Icons.share,
-                                      color: Colors.white,
-                                      size: 30,
-                                    ),
+                                  FavoriteButtonMyQuote(
+                                    quote: quote,
+                                    index: index,
                                   ),
+
+                                  // const SizedBox(width: 10),
+                                  // IconButton(
+                                  //   onPressed: () {},
+                                  //   icon: const Icon(
+                                  //     Icons.share,
+                                  //     color: Colors.white,
+                                  //     size: 30,
+                                  //   ),
+                                  // ),
                                   const SizedBox(width: 10),
                                   IconButton(
                                     onPressed: () {},
@@ -229,6 +220,31 @@ class MyQuotesScreen extends HookConsumerWidget {
                   child: Text('Error: $error'),
                 )),
       ]),
+    );
+  }
+}
+
+class FavoriteButtonMyQuote extends ConsumerWidget {
+  final UserQuote quote;
+  final int index;
+
+  const FavoriteButtonMyQuote({
+    Key? key,
+    required this.quote,
+    required this.index,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return IconButton(
+      onPressed: () => ref
+          .read(myQuoteControllerProvider.notifier)
+          .toggleLikeQuote(quote, index),
+      icon: Icon(
+        quote.isLiked ? Icons.favorite : Icons.favorite_border,
+        color: Colors.white,
+        size: 30,
+      ),
     );
   }
 }

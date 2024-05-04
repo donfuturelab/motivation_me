@@ -1,13 +1,11 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:motivation_me/features/home/selected_category_provider.dart';
-import 'package:motivation_me/features/main_screen/selected_tab_provider.dart';
 import 'package:motivation_me/models/quote_category.dart';
+
 import '../../core/ultils/helpers/debounce.dart';
 import '/models/enums/category.dart';
 
@@ -25,6 +23,8 @@ class CategoryScreen extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final heightScreen = context.height;
+
+    final statusBarHeight = MediaQuery.of(context).padding.top;
 
     final scrollController = useScrollController();
     final isShowTitle = useState(false);
@@ -75,7 +75,28 @@ class CategoryScreen extends HookConsumerWidget {
       // ref.read(categoryControllerProvider.notifier).cancelSearch();
     }
 
-    print('CategoryScreen build');
+    // void buildPaywallBottomSheet() {
+    // showBottomSheet(
+    //   context: context,
+    //   builder: (context) {
+    //     return SizedBox(
+    //       height: MediaQuery.of(context).size.height,
+    //       child: const PaywallScreen(),
+    //     );
+    //   },
+    // );
+
+    void buildPaywallBottomSheet(statusBarHeight) {
+      showModalBottomSheet(
+          context: context,
+          isScrollControlled: true,
+          builder: (context) {
+            return Container(
+                color: AppColors.black,
+                padding: EdgeInsets.only(top: statusBarHeight),
+                child: const PaywallScreen());
+          });
+    }
 
     SliverGrid buildDefaultCategory(List<QuoteCategory> categories,
         double heightScreen, bool isSubscribed) {
@@ -97,14 +118,12 @@ class CategoryScreen extends HookConsumerWidget {
               // use switch case to handle different status
               switch (selectStatus) {
                 case SelectCategoryStatus.success:
-                  ref.read(selectedCategoryProvider.notifier);
                   if (context.mounted) {
                     context.go(Routes.mainScreen);
                   }
-
                   break;
                 case SelectCategoryStatus.notSubscribed:
-                  _buildPaywallBottomSheet(heightScreen);
+                  buildPaywallBottomSheet(statusBarHeight);
                   break;
                 case SelectCategoryStatus.alreadyAdded:
                   break;
@@ -183,7 +202,7 @@ class CategoryScreen extends HookConsumerWidget {
                   }
                   break;
                 case SelectCategoryStatus.notSubscribed:
-                  _buildPaywallBottomSheet(heightScreen);
+                  buildPaywallBottomSheet(statusBarHeight);
                   break;
                 case SelectCategoryStatus.alreadyAdded:
                   break;
@@ -299,15 +318,6 @@ class CategoryScreen extends HookConsumerWidget {
           loading: () => const CircleProgressBar(),
           error: (e, s) => Text('Error: $e')),
     );
-  }
-
-  void _buildPaywallBottomSheet(double heightScreen) {
-    Get.bottomSheet(
-        SizedBox(
-          height: heightScreen,
-          child: const PaywallScreen(),
-        ),
-        isScrollControlled: true);
   }
 }
 

@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:get/get.dart';
 
 class UserQuoteMap {
   String quoteContent;

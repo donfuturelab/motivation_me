@@ -7,7 +7,7 @@ part of 'create_quote_provider.dart';
 // **************************************************************************
 
 String _$createQuoteControllerHash() =>
-    r'3720a7451779c1c37e8762e8a3cb1030540e85d4';
+    r'5bc76435d031cc2ddb293b8c5dbcf27daec84dca';
 
 /// See also [CreateQuoteController].
 @ProviderFor(CreateQuoteController)

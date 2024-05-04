@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:get/get.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:motivation_me/common_widgets/snackbar.dart';
 import '/features/paywall/paywall_screen.dart';
 import '/features/themes/selected_theme_provider.dart';
 import '../../common_widgets/circle_progress_bar.dart';
@@ -19,16 +20,21 @@ class ThemesScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final statusBarHeight = MediaQuery.of(context).padding.top;
+
     final isEditedUserTheme = useState(false);
 
     final controller = ref.watch(themesControllerProvider);
 
-    void buildPaywallBottomSheet() {
+    void buildPaywallBottomSheet(BuildContext context, double statusBarHeight) {
       showModalBottomSheet(
           context: context,
           isScrollControlled: true,
           builder: (context) {
-            return const PaywallScreen();
+            return Container(
+                color: AppColors.black,
+                padding: EdgeInsets.only(top: statusBarHeight),
+                child: const PaywallScreen());
           });
     }
 
@@ -36,36 +42,34 @@ class ThemesScreen extends HookConsumerWidget {
       //use switch case to handle the result
       switch (addThemeResult) {
         case AddThemeStatus.exist:
-          Get.snackbar('Exist', 'Theme is already added',
-              duration: 5.seconds,
-              colorText: Colors.white,
-              backgroundColor: AppColors.middleBlack,
-              snackPosition: SnackPosition.BOTTOM,
-              margin: const EdgeInsets.only(right: 50, left: 50, bottom: 100));
+          showSnackbar(context,
+              content: 'Theme is already added',
+              textColor: AppColors.textColor,
+              duration: const Duration(seconds: 5),
+              backgroundColor: AppColors.middleBlack);
+
           break;
         case AddThemeStatus.overLimitForFree:
-          buildPaywallBottomSheet();
+          buildPaywallBottomSheet(context, statusBarHeight);
           break;
         case AddThemeStatus.notFree:
-          buildPaywallBottomSheet();
+          buildPaywallBottomSheet(context, statusBarHeight);
           break;
         case AddThemeStatus.success:
           break;
         case AddThemeStatus.overMaxLimit:
-          Get.snackbar('Over limit', 'You have reached maximum limit',
-              duration: 5.seconds,
-              colorText: Colors.white,
-              backgroundColor: AppColors.middleBlack,
-              snackPosition: SnackPosition.BOTTOM,
-              margin: const EdgeInsets.only(right: 50, left: 50, bottom: 100));
+          showSnackbar(context,
+              content: 'Over limit, You have reached maximum limit',
+              textColor: AppColors.textColor,
+              duration: const Duration(seconds: 5),
+              backgroundColor: AppColors.middleBlack);
           break;
         default:
-          Get.snackbar('Error', 'Failed to add theme',
-              duration: 5.seconds,
-              colorText: Colors.white,
-              backgroundColor: AppColors.middleBlack,
-              snackPosition: SnackPosition.BOTTOM,
-              margin: const EdgeInsets.only(right: 50, left: 50, bottom: 100));
+          showSnackbar(context,
+              content: 'Failed to add theme',
+              textColor: AppColors.textColor,
+              duration: const Duration(seconds: 5),
+              backgroundColor: AppColors.middleBlack);
       }
     }
 
@@ -260,108 +264,11 @@ class ThemesScreen extends HookConsumerWidget {
       );
     }
 
-    // Widget buildFreeThemes(List<QuoteTheme> freeThemes) {
-    //   return Column(
-    //     crossAxisAlignment: CrossAxisAlignment.start,
-    //     children: [
-    //       Padding(
-    //         padding: const EdgeInsets.only(left: 16),
-    //         child: Text(
-    //           'Free today',
-    //           style: context.textTheme.displayMedium,
-    //         ),
-    //       ),
-    //       const SizedBox(height: 20),
-    //       SizedBox(
-    //         height: 150,
-    //         width: double.infinity,
-    //         child: ListView.builder(
-    //           scrollDirection: Axis.horizontal,
-    //           itemCount: freeThemes.length,
-    //           itemBuilder: (context, index) {
-    //             final theme = freeThemes[index];
-    //             return Container(
-    //               margin: index == 0
-    //                   ? const EdgeInsets.only(left: 16)
-    //                   : index ==
-    //                           freeThemes.length -
-    //                               1 //check if it is the last item
-    //                       ? const EdgeInsets.only(left: 20, right: 16)
-    //                       : const EdgeInsets.only(left: 20),
-    //               width: 100,
-    //               height: 150,
-    //               alignment: Alignment.topRight,
-    //               decoration: BoxDecoration(
-    //                   borderRadius: BorderRadius.circular(10),
-    //                   image: DecorationImage(
-    //                       image: AssetImage(
-    //                           '$rootBackgroundUrl${theme.imageCode}.jpg'),
-    //                       fit: BoxFit.cover)),
-    //               child: Stack(
-    //                 children: [
-    //                   Center(
-    //                     child: Text(
-    //                       'Abcd',
-    //                       style: TextStyle(
-    //                           fontSize: (theme.fontSize!).toDouble(),
-    //                           fontWeight: FontWeight.bold,
-    //                           // fontFamily: _controller
-    //                           //     .selectedThemes[index].fontFamily,
-    //                           fontFamily: theme.fontFamily,
-    //                           color: hexStringToColor(theme.fontColor)),
-    //                     ),
-    //                   ),
-    //                   Align(
-    //                     alignment: Alignment.topRight,
-    //                     child: Obx(
-    //                       () => theme.isSelected
-    //                           ? const Padding(
-    //                               padding:
-    //                                   EdgeInsets.only(top: 10.0, right: 10),
-    //                               child: Icon(Icons.check_circle,
-    //                                   color: Colors.white, size: 25),
-    //                             )
-    //                           : IconButton(
-    //                               onPressed: () async {
-    //                                 final status = await ref
-    //                                     .read(selectedThemesProvider.notifier)
-    //                                     .addTheme(theme);
-    //                                 handleAddTheme(status);
-    //                               },
-    //                               icon: const CircleAvatar(
-    //                                 radius: 12,
-    //                                 backgroundColor: Colors.white,
-    //                                 child: Icon(
-    //                                   Icons.add,
-    //                                   color: Colors.black,
-    //                                   size: 20,
-    //                                 ),
-    //                               ),
-    //                             ),
-    //                     ),
-    //                   ),
-    //                 ],
-    //               ),
-    //             );
-    //           },
-    //         ),
-    //       )
-    //     ],
-    //   );
-    // }
-
     return Scaffold(
       backgroundColor: AppColors.black,
-      appBar: AppBar(
-        title: Text(
-          'Themes',
-          style: context.textTheme.displayLarge,
-        ),
-        backgroundColor: AppColors.black,
-        automaticallyImplyLeading: false,
-      ),
       body: controller.when(
-        data: (controller) => SafeArea(
+        data: (controller) => Padding(
+          padding: EdgeInsets.only(bottom: 110, top: statusBarHeight),
           child: Scrollbar(
             thickness: 6,
             radius: const Radius.circular(3),
@@ -390,98 +297,98 @@ class ThemesScreen extends HookConsumerWidget {
                   ),
                   const SizedBox(height: 20),
                   //create list of background but can scroll horizontal and the first item have left margin 16
-                  SizedBox(
-                      height: 150,
-                      width: double.infinity,
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: controller.selectedThemes.length + 1,
-                        itemBuilder: (context, index) {
-                          SelectedTheme? theme =
-                              index == controller.selectedThemes.length
-                                  ? null
-                                  : controller.selectedThemes[index];
+                  // SizedBox(
+                  //   height: 150,
+                  //   width: double.infinity,
+                  //   child: ListView.builder(
+                  //     scrollDirection: Axis.horizontal,
+                  //     itemCount: controller.selectedThemes.length + 1,
+                  //     itemBuilder: (context, index) {
+                  //       SelectedTheme? theme =
+                  //           index == controller.selectedThemes.length
+                  //               ? null
+                  //               : controller.selectedThemes[index];
 
-                          return theme == null
-                              ? Container(
-                                  margin: const EdgeInsets.only(
-                                      left: 20, right: 16),
-                                  width: 100,
-                                  height: 150,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      color: AppColors.black,
-                                      border: Border.all(color: Colors.white)),
-                                  child: const Icon(
-                                    Icons.add,
-                                    size: 50,
-                                    color: Colors.white,
-                                  ),
-                                )
-                              : Container(
-                                  margin: index == 0
-                                      ? const EdgeInsets.only(left: 16)
-                                      : const EdgeInsets.only(left: 20),
-                                  width: 100,
-                                  height: 150,
-                                  alignment: Alignment.topRight,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      image: DecorationImage(
-                                          image: AssetImage(
-                                              '$rootBackgroundUrl${theme.imageCode}.jpg'),
-                                          fit: BoxFit.cover)),
-                                  child: Stack(
-                                    children: [
-                                      Center(
-                                        child: Text(
-                                          'Abcd',
-                                          style: TextStyle(
-                                              fontSize: (controller
-                                                      .selectedThemes[index]
-                                                      .fontSize!)
-                                                  .toDouble(),
-                                              fontWeight: FontWeight.bold,
-                                              // fontFamily: _controller
-                                              //     .selectedThemes[index].fontFamily,
-                                              fontFamily: theme.fontFamily,
-                                              color: hexStringToColor(
-                                                  theme.fontColor)),
-                                        ),
-                                      ),
-                                      Align(
-                                        alignment: Alignment.topRight,
-                                        child: isEditedUserTheme.value
-                                            ? IconButton(
-                                                onPressed: () => ref
-                                                    .read(selectedThemesProvider
-                                                        .notifier)
-                                                    .removeTheme(index),
-                                                icon: const CircleAvatar(
-                                                  backgroundColor:
-                                                      AppColors.main,
-                                                  radius: 12,
-                                                  child: Icon(
-                                                    Icons.remove,
-                                                    color: Colors.black,
-                                                    size: 20,
-                                                  ),
-                                                ),
-                                              )
-                                            : const Padding(
-                                                padding: EdgeInsets.only(
-                                                    top: 10.0, right: 10),
-                                                child: Icon(Icons.check_circle,
-                                                    color: Colors.white,
-                                                    size: 25),
-                                              ),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                        },
-                      )),
-
+                  //       return theme == null
+                  //           ? Container(
+                  //               margin:
+                  //                   const EdgeInsets.only(left: 20, right: 16),
+                  //               width: 100,
+                  //               height: 150,
+                  //               decoration: BoxDecoration(
+                  //                   borderRadius: BorderRadius.circular(10),
+                  //                   color: AppColors.black,
+                  //                   border: Border.all(color: Colors.white)),
+                  //               child: const Icon(
+                  //                 Icons.add,
+                  //                 size: 50,
+                  //                 color: Colors.white,
+                  //               ),
+                  //             )
+                  //           : Container(
+                  //               margin: index == 0
+                  //                   ? const EdgeInsets.only(left: 16)
+                  //                   : const EdgeInsets.only(left: 20),
+                  //               width: 100,
+                  //               height: 150,
+                  //               alignment: Alignment.topRight,
+                  //               decoration: BoxDecoration(
+                  //                   borderRadius: BorderRadius.circular(10),
+                  //                   image: DecorationImage(
+                  //                       image: AssetImage(
+                  //                           '$rootBackgroundUrl${theme.imageCode}.jpg'),
+                  //                       fit: BoxFit.cover)),
+                  //               child: Stack(
+                  //                 children: [
+                  //                   Center(
+                  //                     child: Text(
+                  //                       'Abcd',
+                  //                       style: TextStyle(
+                  //                           fontSize: (controller
+                  //                                   .selectedThemes[index]
+                  //                                   .fontSize!)
+                  //                               .toDouble(),
+                  //                           fontWeight: FontWeight.bold,
+                  //                           // fontFamily: _controller
+                  //                           //     .selectedThemes[index].fontFamily,
+                  //                           fontFamily: theme.fontFamily,
+                  //                           color: hexStringToColor(
+                  //                               theme.fontColor)),
+                  //                     ),
+                  //                   ),
+                  //                   Align(
+                  //                     alignment: Alignment.topRight,
+                  //                     child: isEditedUserTheme.value
+                  //                         ? IconButton(
+                  //                             onPressed: () => ref
+                  //                                 .read(selectedThemesProvider
+                  //                                     .notifier)
+                  //                                 .removeTheme(index),
+                  //                             icon: const CircleAvatar(
+                  //                               backgroundColor: AppColors.main,
+                  //                               radius: 12,
+                  //                               child: Icon(
+                  //                                 Icons.remove,
+                  //                                 color: Colors.black,
+                  //                                 size: 20,
+                  //                               ),
+                  //                             ),
+                  //                           )
+                  //                         : const Padding(
+                  //                             padding: EdgeInsets.only(
+                  //                                 top: 10.0, right: 10),
+                  //                             child: Icon(Icons.check_circle,
+                  //                                 color: Colors.white,
+                  //                                 size: 25),
+                  //                           ),
+                  //                   ),
+                  //                 ],
+                  //               ),
+                  //             );
+                  //     },
+                  //   ),
+                  // ),
+                  SelectedThemes(isEditedUserTheme: isEditedUserTheme.value),
                   const SizedBox(height: 20),
                   buildFreeThemes(controller.freeThemes),
                   const SizedBox(height: 20),
@@ -506,6 +413,99 @@ class ThemesScreen extends HookConsumerWidget {
         error: (error, stack) => Center(
           child: Text('Error: $error'),
         ),
+      ),
+    );
+  }
+}
+
+class SelectedThemes extends ConsumerWidget {
+  const SelectedThemes({super.key, required this.isEditedUserTheme});
+  final bool isEditedUserTheme;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final selectedThemes = ref.watch(selectedThemesProvider);
+
+    return SizedBox(
+      height: 150,
+      width: double.infinity,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: selectedThemes.length + 1,
+        itemBuilder: (context, index) {
+          SelectedTheme? theme =
+              index == selectedThemes.length ? null : selectedThemes[index];
+
+          return theme == null
+              ? Container(
+                  margin: const EdgeInsets.only(left: 20, right: 16),
+                  width: 100,
+                  height: 150,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: AppColors.black,
+                      border: Border.all(color: Colors.white)),
+                  child: const Icon(
+                    Icons.add,
+                    size: 50,
+                    color: Colors.white,
+                  ),
+                )
+              : Container(
+                  margin: index == 0
+                      ? const EdgeInsets.only(left: 16)
+                      : const EdgeInsets.only(left: 20),
+                  width: 100,
+                  height: 150,
+                  alignment: Alignment.topRight,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      image: DecorationImage(
+                          image: AssetImage(
+                              '$rootBackgroundUrl${theme.imageCode}.jpg'),
+                          fit: BoxFit.cover)),
+                  child: Stack(
+                    children: [
+                      Center(
+                        child: Text(
+                          'Abcd',
+                          style: TextStyle(
+                              fontSize:
+                                  (selectedThemes[index].fontSize!).toDouble(),
+                              fontWeight: FontWeight.bold,
+                              // fontFamily: _controller
+                              //     .selectedThemes[index].fontFamily,
+                              fontFamily: theme.fontFamily,
+                              color: hexStringToColor(theme.fontColor)),
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.topRight,
+                        child: isEditedUserTheme
+                            ? IconButton(
+                                onPressed: () => ref
+                                    .read(selectedThemesProvider.notifier)
+                                    .removeTheme(index),
+                                icon: const CircleAvatar(
+                                  backgroundColor: AppColors.main,
+                                  radius: 12,
+                                  child: Icon(
+                                    Icons.remove,
+                                    color: Colors.black,
+                                    size: 20,
+                                  ),
+                                ),
+                              )
+                            : const Padding(
+                                padding: EdgeInsets.only(top: 10.0, right: 10),
+                                child: Icon(Icons.check_circle,
+                                    color: Colors.white, size: 25),
+                              ),
+                      ),
+                    ],
+                  ),
+                );
+        },
       ),
     );
   }

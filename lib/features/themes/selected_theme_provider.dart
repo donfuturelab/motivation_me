@@ -37,7 +37,7 @@ class SelectedThemes extends _$SelectedThemes {
         }
 
         // 4. add theme to selected themes
-        state.insert(0, SelectedTheme.fromQuoteTheme(theme));
+        state = [SelectedTheme.fromQuoteTheme(theme), ...state];
         _setSelectedThemesIDs.add(theme.themeID);
         await _box.addTheme(SelectedTheme.fromQuoteTheme(theme));
         // theme.isSelected.value = true;
@@ -57,7 +57,8 @@ class SelectedThemes extends _$SelectedThemes {
 
           _setSelectedThemesIDs.add(theme.themeID);
           await _box.addTheme(SelectedTheme.fromQuoteTheme(theme));
-          state.insert(0, SelectedTheme.fromQuoteTheme(theme));
+          // 4. add theme to selected themes
+          state = [SelectedTheme.fromQuoteTheme(theme), ...state];
           return AddThemeStatus.success;
         }
       } else {
@@ -69,7 +70,9 @@ class SelectedThemes extends _$SelectedThemes {
   void removeTheme(int themeIndex) async {
     final theme = state[themeIndex];
     _setSelectedThemesIDs.remove(theme.themeID);
-    state.removeAt(themeIndex);
+    List<SelectedTheme> newState = List<SelectedTheme>.from(state);
+    newState.removeAt(themeIndex);
+    state = newState;
     await _box.updateNewThemeList(state.toList());
   }
 

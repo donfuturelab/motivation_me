@@ -10,7 +10,6 @@ import 'package:timezone/data/latest_all.dart' as tz;
 import 'core/constant/colors.dart';
 import 'core/constant/revenue_cat.dart';
 import 'core/database/check_and_update_database.dart';
-import 'core/dependency injection/dependency_injection.dart' as di;
 import 'core/local_storage/quote_theme_storage.dart';
 import 'core/notification/notification_service.dart';
 import 'core/store_config/config_sdk.dart';
@@ -37,7 +36,7 @@ void main() async {
   tz.initializeTimeZones();
 
   // InitialBindings();
-  await di.init();
+  // await di.init();
   runApp(const ProviderScope(child: MyApp()));
 }
 

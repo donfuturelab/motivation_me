@@ -43,7 +43,7 @@ class NotificationHelper {
       {required List<DateTime> dateTimes,
       required List<int> daysOfWeek,
       required int timesPerDay}) async {
-    final defaulQuoteRepo = Get.find<DefaultQuotesRepository>();
+    final defaulQuoteRepo = DefaultQuotesRepository();
 
     List<DefaultQuote> quotes = [];
     final numberOfQuotes = daysOfWeek.length * timesPerDay;
