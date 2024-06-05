@@ -2,8 +2,6 @@ import 'dart:async';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../core/local_storage/configuration_storage.dart';
-
 import '../../models/default_quote.dart';
 import '../../models/enum.dart';
 
@@ -18,6 +16,7 @@ class HomeController extends _$HomeController {
   @override
   FutureOr<List<DefaultQuote>> build() async {
     final category = ref.watch(selectedCategoryProvider);
+
     final List<DefaultQuote> quotes = await ref
         .read(defaultQuotesRepositoryProvider)
         .getQuotesByCategory(category.id);
@@ -38,6 +37,18 @@ class HomeController extends _$HomeController {
     // List<DefaultQuote> quoteList = state.valueOrNull!;
     List<DefaultQuote> quoteList = List<DefaultQuote>.from(state.value ?? []);
     quoteList[index] = quote.copyWith(isLiked: !quote.isLiked);
+    state = AsyncData(quoteList);
+  }
+
+  //fetch more quotes by category
+  Future<void> fetchMoreQuotes() async {
+    final category = ref.watch(selectedCategoryProvider);
+    final List<DefaultQuote> quotes = await ref
+        .read(defaultQuotesRepositoryProvider)
+        .getQuotesByCategory(category.id);
+    final List<DefaultQuote> quoteList =
+        List<DefaultQuote>.from(state.value ?? []);
+    quoteList.addAll(quotes);
     state = AsyncData(quoteList);
   }
 }

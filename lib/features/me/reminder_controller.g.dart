@@ -7,7 +7,7 @@ part of 'reminder_controller.dart';
 // **************************************************************************
 
 String _$reminderControllerHash() =>
-    r'992884a55d5ef172f0ae7c88ed82bd05de6800b1';
+    r'b4ad72deab6fd14bbd4cd9a028f7cbcddda968e3';
 
 /// See also [ReminderController].
 @ProviderFor(ReminderController)

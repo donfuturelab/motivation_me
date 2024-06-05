@@ -15,9 +15,12 @@ class Subscription extends _$Subscription {
     return entitlement?.isActive ?? false;
   }
 
+  Future<void> updateSubscriptionStatus({required bool isSubscribed}) async {
+    state = AsyncValue.data(isSubscribed);
+  }
+
   Future<PurchaseStatus> purchaseSubscription() async {
     try {
-      state = const AsyncLoading();
       Offerings offerings = await Purchases.getOfferings();
       Package? package = offerings.getOffering(offeringIdentifier)?.annual;
       if (package != null) {
@@ -87,15 +90,28 @@ class Subscription extends _$Subscription {
     // }
   }
 
-  Future<void> restoreSubscription() async {
-    state = const AsyncLoading();
+  Future<RestoreStatus> restoreSubscription() async {
     try {
       CustomerInfo customerInfo = await Purchases.restorePurchases();
       EntitlementInfo? entitlement =
           customerInfo.entitlements.all[entitlementID];
-      state = AsyncValue.data(entitlement?.isActive ?? false);
-    } on PurchasesError catch (e) {
-      print(e);
+      if (entitlement?.isActive ?? false) {
+        state = const AsyncValue.data(true);
+        return RestoreStatus.success;
+      } else {
+        state = const AsyncValue.data(false);
+        return RestoreStatus.fail;
+      }
+    } on PlatformException catch (e) {
+      var errorCode = PurchasesErrorHelper.getErrorCode(e);
+      switch (errorCode) {
+        case PurchasesErrorCode.missingReceiptFileError:
+          state = const AsyncValue.data(false);
+          return RestoreStatus.cancelRestore;
+        default:
+          state = const AsyncValue.data(false);
+          return RestoreStatus.error;
+      }
     }
   }
 }
@@ -106,6 +122,15 @@ enum PurchaseStatus {
   cancelPurchase,
   error,
 }
+
+enum RestoreStatus {
+  success,
+  fail,
+  error,
+  cancelRestore,
+}
+
+
 
 
 // try {

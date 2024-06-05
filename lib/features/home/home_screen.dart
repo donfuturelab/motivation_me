@@ -5,7 +5,8 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:motivation_me/models/enum.dart';
+
+import '/models/enum.dart';
 
 import '../../common_widgets/circle_progress_bar.dart';
 import '../../core/constant/colors.dart';
@@ -26,6 +27,12 @@ class HomeScreen extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     // Show reminder init bottomsheet after 30 seconds
 
+    final themes = ref.watch(selectedThemesProvider);
+
+    final quotes = ref.watch(homeControllerProvider);
+
+    final category = ref.watch(selectedCategoryProvider);
+
     final animationController =
         useAnimationController(duration: const Duration(seconds: 10));
 
@@ -34,6 +41,9 @@ class HomeScreen extends HookConsumerWidget {
 
     final pageController =
         usePageController(viewportFraction: 1, keepPage: true);
+
+    final statusBarHeight =
+        useMemoized(() => MediaQuery.of(context).padding.top);
 
     //show reminder init bottomsheet after 15 seconds
     useEffect(() {
@@ -52,11 +62,22 @@ class HomeScreen extends HookConsumerWidget {
               ),
               builder: (BuildContext bc) {
                 return SizedBox(
-                    height: MediaQuery.of(context).size.height,
+                    height: MediaQuery.of(context).size.height * 0.6,
                     child: const ReminderInitBottomsheet());
               });
         });
       }
+      // listen to pageController to fetch more quotes
+      pageController.addListener(() {
+        //check if pageController has reached the page nearest to the end
+
+        if (pageController.position.pixels ==
+            pageController.position.maxScrollExtent -
+                pageController.position.viewportDimension) {
+          ref.read(homeControllerProvider.notifier).fetchMoreQuotes();
+        }
+      });
+
       return null;
     }, const []);
 
@@ -64,15 +85,6 @@ class HomeScreen extends HookConsumerWidget {
       animationController.reset();
       animationController.forward();
     }
-
-    final themes = ref.watch(selectedThemesProvider);
-
-    final quotes = ref.watch(homeControllerProvider);
-
-    final category = ref.watch(selectedCategoryProvider);
-
-    print('category: ${category.name}');
-    print('themes: ${themes.length}');
 
     return Scaffold(
       resizeToAvoidBottomInset: true,
@@ -154,7 +166,7 @@ class HomeScreen extends HookConsumerWidget {
                           IconButton(
                             onPressed: () {
                               _showAddToCollectionBottomSheet(
-                                  context, quote.id);
+                                  context, quote.id, statusBarHeight);
                             },
                             icon: const Icon(
                               Icons.bookmark_border,
@@ -210,7 +222,8 @@ class HomeScreen extends HookConsumerWidget {
   }
 
   //create bottomsheet to show add to collection do not use Get.bottomSheet
-  void _showAddToCollectionBottomSheet(BuildContext context, int quoteId) {
+  void _showAddToCollectionBottomSheet(
+      BuildContext context, int quoteId, double statusBarHeight) {
     showModalBottomSheet(
       context: context,
       backgroundColor: AppColors.black,
@@ -223,8 +236,11 @@ class HomeScreen extends HookConsumerWidget {
         ),
       ),
       builder: (context) {
-        return SizedBox(
-          height: context.height,
+        return Container(
+          color: AppColors.black,
+          padding: EdgeInsets.only(
+            top: statusBarHeight,
+          ),
           child: AddToCollectionScreen(
               quoteId: quoteId, quoteSource: QuoteSource.defaultQuote),
         );

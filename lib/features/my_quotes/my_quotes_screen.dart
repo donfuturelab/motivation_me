@@ -7,6 +7,8 @@ import 'package:motivation_me/models/user_quote.dart';
 import '../../common_widgets/circle_progress_bar.dart';
 import '../../core/constant/colors.dart';
 import '../../core/ultils/helpers/convert_theme_data.dart';
+import '../../models/enum.dart';
+import '../add_to_collection/add_to_collection_screen.dart';
 import 'my_quote_controller.dart';
 
 class MyQuotesScreen extends HookConsumerWidget {
@@ -96,6 +98,8 @@ class MyQuotesScreen extends HookConsumerWidget {
       ]);
     }
 
+    final statusBarHeight = MediaQuery.of(context).padding.top;
+
     return Scaffold(
       body: Stack(children: [
         controller.when(
@@ -168,19 +172,12 @@ class MyQuotesScreen extends HookConsumerWidget {
                                     quote: quote,
                                     index: index,
                                   ),
-
-                                  // const SizedBox(width: 10),
-                                  // IconButton(
-                                  //   onPressed: () {},
-                                  //   icon: const Icon(
-                                  //     Icons.share,
-                                  //     color: Colors.white,
-                                  //     size: 30,
-                                  //   ),
-                                  // ),
                                   const SizedBox(width: 10),
                                   IconButton(
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      _showAddToCollectionBottomSheet(
+                                          context, quote.id, statusBarHeight);
+                                    },
                                     icon: const Icon(
                                       Icons.bookmark_border,
                                       color: Colors.white,
@@ -220,6 +217,32 @@ class MyQuotesScreen extends HookConsumerWidget {
                   child: Text('Error: $error'),
                 )),
       ]),
+    );
+  }
+
+  void _showAddToCollectionBottomSheet(
+      BuildContext context, int quoteId, double statusBarHeight) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: AppColors.black,
+      isScrollControlled: true,
+      clipBehavior: Clip.antiAlias,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(20),
+          topRight: Radius.circular(20),
+        ),
+      ),
+      builder: (context) {
+        return Container(
+          color: AppColors.black,
+          padding: EdgeInsets.only(
+            top: statusBarHeight,
+          ),
+          child: AddToCollectionScreen(
+              quoteId: quoteId, quoteSource: QuoteSource.userQuote),
+        );
+      },
     );
   }
 }

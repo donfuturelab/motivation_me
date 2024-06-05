@@ -3,7 +3,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:motivation_me/features/home/selected_category_provider.dart';
 import 'package:motivation_me/models/quote_category.dart';
 
 import '../../core/ultils/helpers/debounce.dart';

@@ -158,57 +158,54 @@ class AddToCollectionScreen extends HookConsumerWidget {
       );
     }
 
-    return Padding(
-      padding: const EdgeInsets.only(top: 50),
-      child: Scaffold(
+    return Scaffold(
+      backgroundColor: AppColors.black,
+      resizeToAvoidBottomInset: true,
+      appBar: AppBar(
         backgroundColor: AppColors.black,
-        resizeToAvoidBottomInset: true,
-        appBar: AppBar(
-          backgroundColor: AppColors.black,
-          elevation: 0,
-          leading: !isAddNew.value
-              ? IconButton(
-                  icon: const ButtonToClose(),
+        elevation: 0,
+        leading: !isAddNew.value
+            ? IconButton(
+                icon: const ButtonToClose(),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              )
+            : BackButton(
+                onPressed: () {
+                  isAddNew.value = false;
+                  //remove focus node if close add new collection
+                  focusText.unfocus();
+                },
+                color: AppColors.textColor,
+              ),
+        actions: [
+          !isAddNew.value
+              ? TextButton(
+                  child:
+                      Text('Add new', style: context.textTheme.displayMedium),
                   onPressed: () {
-                    Navigator.of(context).pop();
+                    isAddNew.value = true;
+                    //add focus node to text field if add new collection
+                    focusText.requestFocus();
                   },
                 )
-              : BackButton(
-                  onPressed: () {
-                    isAddNew.value = false;
-                    //remove focus node if close add new collection
-                    focusText.unfocus();
-                  },
-                  color: AppColors.textColor,
-                ),
-          actions: [
-            !isAddNew.value
-                ? TextButton(
-                    child:
-                        Text('Add new', style: context.textTheme.displayMedium),
-                    onPressed: () {
-                      isAddNew.value = true;
-                      //add focus node to text field if add new collection
-                      focusText.requestFocus();
-                    },
-                  )
-                : const SizedBox()
-          ],
-        ),
-        body: Stack(
-          children: [
-            AnimatedPositioned(
-              duration: const Duration(milliseconds: 200),
-              left: isAddNew.value ? -context.width : 0,
-              child: buildAddToCollection(),
-            ),
-            AnimatedPositioned(
-              duration: const Duration(milliseconds: 200),
-              left: isAddNew.value ? 0 : context.width,
-              child: buildAddNewCollection(),
-            ),
-          ],
-        ),
+              : const SizedBox()
+        ],
+      ),
+      body: Stack(
+        children: [
+          AnimatedPositioned(
+            duration: const Duration(milliseconds: 200),
+            left: isAddNew.value ? -context.width : 0,
+            child: buildAddToCollection(),
+          ),
+          AnimatedPositioned(
+            duration: const Duration(milliseconds: 200),
+            left: isAddNew.value ? 0 : context.width,
+            child: buildAddNewCollection(),
+          ),
+        ],
       ),
     );
   }

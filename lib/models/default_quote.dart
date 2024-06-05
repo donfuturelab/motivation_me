@@ -6,7 +6,7 @@ class DefaultQuote extends Equatable {
   final int? authorId;
   final String? authorName;
   // DateTime createdAt;
-  final int categoryId;
+  // final int categoryId;
   final bool isLiked;
 
   const DefaultQuote(
@@ -15,7 +15,7 @@ class DefaultQuote extends Equatable {
       this.authorId,
       this.authorName,
       // required this.createdAt,
-      required this.categoryId,
+      // required this.categoryId,
       required this.isLiked});
 
   factory DefaultQuote.fromMap(Map<String, dynamic> map) {
@@ -25,7 +25,7 @@ class DefaultQuote extends Equatable {
         authorId: map['author_id'],
         authorName: map['author_name'],
         // createdAt: DateTime.parse(map['created_at']),
-        categoryId: map['category_id'],
+        // categoryId: map['category_id'],
         isLiked: map['is_liked'] == 1);
   }
 
@@ -43,12 +43,11 @@ class DefaultQuote extends Equatable {
     return DefaultQuote(
         id: id ?? this.id,
         quoteContent: quoteContent ?? this.quoteContent,
-        categoryId: categoryId ?? this.categoryId,
+        // categoryId: categoryId ?? this.categoryId,
         authorName: authorName ?? this.authorName,
         isLiked: isLiked ?? this.isLiked);
   }
 
   @override
-  List<Object?> get props =>
-      [id, quoteContent, authorId, authorName, categoryId, isLiked];
+  List<Object?> get props => [id, quoteContent, authorId, authorName, isLiked];
 }

@@ -161,7 +161,7 @@ class ReminderController extends _$ReminderController {
   }
 
   //init reminder
-  void initReminder() {
+  void initReminder() async {
     final dateTimes = NotificationHelper.generateDateTimes(
         daysOfWeek: state.reminderDays,
         timesPerDay: state.timePerDay,
@@ -175,16 +175,16 @@ class ReminderController extends _$ReminderController {
           dateTimes: dateTimes,
           daysOfWeek: state.reminderDays,
           timesPerDay: state.timePerDay);
-      ConfigurationStorage.isSetInitReminder(true);
+      await ConfigurationStorage.isSetInitReminder(true);
     } else {
       NotificationService.requestPermissions();
-      ConfigurationStorage.isAcceptNotification(true);
-      NotificationService.cancelNotification(0);
+      await ConfigurationStorage.isAcceptNotification(true);
+      await NotificationService.cancelNotification(0);
       NotificationHelper.scheduleQuoteReminder(
           dateTimes: dateTimes,
           daysOfWeek: state.reminderDays,
           timesPerDay: state.timePerDay);
-      ConfigurationStorage.isSetInitReminder(true);
+      await ConfigurationStorage.isSetInitReminder(true);
     }
   }
 

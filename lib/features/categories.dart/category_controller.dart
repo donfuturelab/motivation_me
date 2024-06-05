@@ -65,6 +65,8 @@ class CategoryController extends _$CategoryController {
         final previousIndex =
             categories!.indexWhere((category) => category.isSelected);
 
+        print('previousIndex: $previousIndex');
+
         // change isSelected to false for previous selected category
         categories[previousIndex] =
             categories[previousIndex].copyWith(isSelected: false);

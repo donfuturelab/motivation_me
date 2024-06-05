@@ -1,5 +1,4 @@
 import 'package:day_night_time_picker/day_night_time_picker.dart';
-import 'package:get/get.dart';
 
 import '../../models/default_quote.dart';
 import '../../repositories/default_quotes_repository.dart';

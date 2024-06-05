@@ -7,8 +7,20 @@ import '../ultils/helpers/convert_datetime.dart';
 class ConfigurationStorage {
   static final _box = GetStorage('ConfigurationStorage');
 
-  static Future<void> saveSelectedCategory(
-      {required int categoryId, required String categoryName}) async {
+  static resetSelectedCategory() async {
+    await _box.write('selectedCategoryId', 1);
+    await _box.write('selectedCategoryName', 'General');
+    await _box.write('isResetSelectedCategory', 1);
+  }
+
+  static getIsResetSelectedCategory() {
+    return _box.read('isResetSelectedCategory') ?? 0;
+  }
+
+  static Future<void> saveSelectedCategory({
+    required int categoryId,
+    required String categoryName,
+  }) async {
     await _box.write('selectedCategoryId', categoryId);
     await _box.write('selectedCategoryName', categoryName);
   }

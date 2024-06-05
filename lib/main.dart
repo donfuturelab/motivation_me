@@ -8,8 +8,10 @@ import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 
 import 'core/constant/colors.dart';
+import 'core/constant/database.dart';
 import 'core/constant/revenue_cat.dart';
 import 'core/database/check_and_update_database.dart';
+import 'core/local_storage/configuration_storage.dart';
 import 'core/local_storage/quote_theme_storage.dart';
 import 'core/notification/notification_service.dart';
 import 'core/store_config/config_sdk.dart';
@@ -28,6 +30,13 @@ void main() async {
   await GetStorage.init('QuoteThemeStorage');
   await GetStorage.init('ConfigurationStorage');
   // await QuoteThemeStorage().remove('quoteTheme');
+
+  if (currentDbVersion == 2 &&
+      ConfigurationStorage.getIsResetSelectedCategory() == 0) {
+    await ConfigurationStorage.resetSelectedCategory();
+  } // Reset selected category if db version is 2 and mark isResetSelectedCategory is 1
+  // change for new version
+
   await QuoteThemeStorage().init();
 
   await configSDK(); // Config SDK for in-app purchase

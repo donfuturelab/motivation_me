@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../core/constant/colors.dart';
 import '../me/reminder_controller.dart';
 
-class ReminderInitBottomsheet extends GetView<ReminderController> {
+class ReminderInitBottomsheet extends ConsumerWidget {
   const ReminderInitBottomsheet({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
@@ -38,9 +39,12 @@ class ReminderInitBottomsheet extends GetView<ReminderController> {
                   ),
                   const SizedBox(height: 30),
                   ElevatedButton(
-                    onPressed: () {
-                      controller.initReminder();
-                      Get.back();
+                    onPressed: () async {
+                      ref
+                          .read(reminderControllerProvider.notifier)
+                          .initReminder();
+
+                      Navigator.of(context).pop();
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.main,

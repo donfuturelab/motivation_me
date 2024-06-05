@@ -28,14 +28,15 @@ class ThemesScreen extends HookConsumerWidget {
 
     void buildPaywallBottomSheet(BuildContext context, double statusBarHeight) {
       showModalBottomSheet(
-          context: context,
-          isScrollControlled: true,
-          builder: (context) {
-            return Container(
-                color: AppColors.black,
-                padding: EdgeInsets.only(top: statusBarHeight),
-                child: const PaywallScreen());
-          });
+        context: context,
+        isScrollControlled: true,
+        builder: (context) {
+          return Container(
+              color: AppColors.black,
+              padding: EdgeInsets.only(top: statusBarHeight),
+              child: const PaywallScreen());
+        },
+      );
     }
 
     void handleAddTheme(AddThemeStatus addThemeResult) async {

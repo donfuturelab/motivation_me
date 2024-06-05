@@ -1,18 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:get/get.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:motivation_me/common_widgets/buttons.dart';
 import 'package:motivation_me/common_widgets/snackbar.dart';
+import 'package:motivation_me/core/constant/term_privacy.dart';
 import 'package:motivation_me/features/paywall/subscription_provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/constant/colors.dart';
 
-class PaywallScreen extends ConsumerWidget {
+class PaywallScreen extends HookConsumerWidget {
   const PaywallScreen({super.key});
+
+  Future<void> _launchURL(String url) async {
+    if (!await launchUrl(Uri.parse(url))) {
+      throw 'Could not launch $url';
+    }
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isSubscribed = ref.watch(subscriptionProvider);
+    final isPurchasing = useState(false);
+    final isRestoring = useState(false);
+
     return Scaffold(
       backgroundColor: AppColors.black,
       appBar: AppBar(
@@ -34,18 +45,12 @@ class PaywallScreen extends ConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             Text(
-              'Try Motivation Happy Premium',
+              'Try Motivation Me Premium',
               style: context.textTheme.displayLarge?.copyWith(
                   fontSize: 30, fontWeight: FontWeight.bold, height: 1.5),
             ),
             const SizedBox(height: 20),
 
-            // Image.asset(
-            //   width: 100,
-            //   height: 100,
-            //   fit: BoxFit.cover,
-            //   'assets/images/icons/app_icon.png',
-            // ),
             const Icon(
               Icons.workspace_premium_sharp,
               size: 80,
@@ -64,14 +69,38 @@ class PaywallScreen extends ConsumerWidget {
             const SizedBox(height: 10),
             _buildFeature(context, 'Only \$0.83/month, billed annually'),
             const Spacer(),
+            //create text as rich text for "7 days free, then \$9.9/year"
+            RichText(
+              text: TextSpan(
+                children: [
+                  TextSpan(
+                    text: '7 days free,',
+                    style: context.textTheme.displayMedium,
+                  ),
+                  TextSpan(
+                      text: ' then just ',
+                      style: context.textTheme.displayMedium?.copyWith(
+                        color: Colors.grey,
+                      )),
+                  TextSpan(
+                    text: '\$9.9/year',
+                    style: context.textTheme.displayMedium,
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 10),
+
             ElevatedButton(
               onPressed: () async {
-                if (isSubscribed.isLoading) {
+                if (isPurchasing.value) {
                   return;
                 }
+                isPurchasing.value = true;
                 final purchaseStatus = await ref
                     .read(subscriptionProvider.notifier)
                     .purchaseSubscription();
+                isPurchasing.value = false;
                 switch (purchaseStatus) {
                   case PurchaseStatus.error:
                     if (context.mounted) {
@@ -101,7 +130,7 @@ class PaywallScreen extends ConsumerWidget {
                 height: 60,
                 alignment: Alignment.center,
                 // padding: const EdgeInsets.symmetric(vertical: 20),
-                child: isSubscribed.isLoading
+                child: isPurchasing.value
                     ? const CircularProgressIndicator(
                         color: AppColors.black,
                       )
@@ -113,17 +142,67 @@ class PaywallScreen extends ConsumerWidget {
               ),
             ),
 
-            const SizedBox(height: 20),
+            const SizedBox(height: 15),
             Padding(
               padding: const EdgeInsets.only(bottom: 20),
-              child: TextButton(
-                  onPressed: () => ref
-                      .read(subscriptionProvider.notifier)
-                      .restoreSubscription(),
-                  child: Text(
-                    'Restore',
-                    style: context.textTheme.displaySmall,
-                  )),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  TextButton(
+                      onPressed: () async {
+                        if (isRestoring.value) {
+                          return;
+                        }
+                        isRestoring.value = true;
+                        final restoreStatus = await ref
+                            .read(subscriptionProvider.notifier)
+                            .restoreSubscription();
+                        isRestoring.value = false;
+                        switch (restoreStatus) {
+                          case RestoreStatus.error:
+                            if (context.mounted) {
+                              showSnackbar(context,
+                                  content: 'Something wrong happens',
+                                  textColor: AppColors.textColor);
+                            }
+                            break;
+                          case RestoreStatus.success:
+                            if (context.mounted) {
+                              Navigator.of(context).pop();
+                            }
+                            break;
+                          case RestoreStatus.cancelRestore:
+                            break;
+                          case RestoreStatus.fail:
+                            if (context.mounted) {
+                              showSnackbar(context,
+                                  content:
+                                      'Opps, Cannot restore your subscription',
+                                  textColor: AppColors.textColor);
+                            }
+                            break;
+                        }
+                      },
+                      child: isRestoring.value
+                          ? const CircularProgressIndicator(
+                              color: AppColors.textColor,
+                            )
+                          : Text(
+                              'Restore',
+                              style: context.textTheme.displaySmall,
+                            )),
+                  TextButton(
+                      onPressed: () async => await _launchURL(termUrl),
+                      child: Text('Terms of Service',
+                          style: context.textTheme.displaySmall)),
+                  TextButton(
+                      onPressed: () async => await _launchURL(privacyUrl),
+                      child: Text(
+                        'Privacy Policy',
+                        style: context.textTheme.displaySmall,
+                      )),
+                ],
+              ),
             ),
           ],
         ),
