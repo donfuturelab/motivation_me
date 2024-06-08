@@ -27,6 +27,8 @@ class UserQuotesRepository {
             LIMIT ? OFFSET ?
         ''', [pageSize, (page - 1) * pageSize]);
 
+    print(maps);
+
     return List.generate(maps.length, (i) {
       return UserQuote.fromMap(maps[i]);
     });

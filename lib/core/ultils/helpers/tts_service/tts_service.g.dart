@@ -1,25 +1,24 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'subscription_provider.dart';
+part of 'tts_service.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$subscriptionHash() => r'655d947d44c9f70f3a0f6545ceba217354b0b2d5';
+String _$ttsServiceHash() => r'c7055322a500110f8c69b696aaf5ca97979442a1';
 
-/// See also [Subscription].
-@ProviderFor(Subscription)
-final subscriptionProvider =
-    AutoDisposeAsyncNotifierProvider<Subscription, bool>.internal(
-  Subscription.new,
-  name: r'subscriptionProvider',
+/// See also [ttsService].
+@ProviderFor(ttsService)
+final ttsServiceProvider = AutoDisposeProvider<TtsService>.internal(
+  ttsService,
+  name: r'ttsServiceProvider',
   debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$subscriptionHash,
+      const bool.fromEnvironment('dart.vm.product') ? null : _$ttsServiceHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$Subscription = AutoDisposeAsyncNotifier<bool>;
+typedef TtsServiceRef = AutoDisposeProviderRef<TtsService>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

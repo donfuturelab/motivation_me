@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../core/ultils/helpers/tts_service/tts_service.dart';
 import '/models/enum.dart';
 
 import '../../common_widgets/circle_progress_bar.dart';
@@ -32,6 +33,13 @@ class HomeScreen extends HookConsumerWidget {
     final quotes = ref.watch(homeControllerProvider);
 
     final category = ref.watch(selectedCategoryProvider);
+
+    final ttsService = ref.watch(ttsServiceProvider);
+
+    final isTtsEnabled = useState(false);
+    // final currentQuoteContent = useState('');
+    final currentWordStart = useListenable(ttsService.currentWordStart);
+    final currentWordEnd = useListenable(ttsService.currentWordEnd);
 
     final animationController =
         useAnimationController(duration: const Duration(seconds: 10));
@@ -69,6 +77,12 @@ class HomeScreen extends HookConsumerWidget {
       }
       // listen to pageController to fetch more quotes
       pageController.addListener(() {
+        //check if pageController has reached the page nearest to the start
+        if (pageController.page != null &&
+            pageController.page!.round() != pageController.page) {
+          ttsService.resetCurrentWord();
+        }
+
         //check if pageController has reached the page nearest to the end
 
         if (pageController.position.pixels ==
@@ -78,6 +92,12 @@ class HomeScreen extends HookConsumerWidget {
         }
       });
 
+      // listen to ttsService to enable or disable TTS
+      if (isTtsEnabled.value) {
+        ttsService.initTts();
+      } else {
+        ttsService.stop();
+      }
       return null;
     }, const []);
 
@@ -95,6 +115,14 @@ class HomeScreen extends HookConsumerWidget {
               controller: pageController,
               onPageChanged: (index) {
                 resetScaleAnimation();
+                // if TTS is enabled, start reading the quote content
+
+                if (isTtsEnabled.value) {
+                  ttsService.stop();
+                  Future.delayed(const Duration(seconds: 2), () {
+                    ttsService.speak(quotes[index].quoteContent);
+                  });
+                }
               },
               itemCount: quotes.length,
               scrollDirection: Axis.vertical,
@@ -114,21 +142,70 @@ class HomeScreen extends HookConsumerWidget {
                     children: [
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: Text(
-                          quote.quoteContent,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontSize: 25,
-                              fontFamily: theme.fontFamily,
-                              fontWeight: FontWeight.bold,
-                              color: hexStringToColor(theme.fontColor),
-                              shadows: [
-                                Shadow(
-                                    color: hexStringToColor(theme.shadowColor!),
-                                    offset: const Offset(0, 1),
-                                    blurRadius: 10)
-                              ]),
-                        ),
+                        child: isTtsEnabled.value
+                            ? RichText(
+                                // RichText widget to highlight the current word being read
+                                textAlign: TextAlign.center,
+                                text: TextSpan(
+                                  style: TextStyle(
+                                    fontSize: 25,
+                                    fontFamily: theme.fontFamily,
+                                    fontWeight: FontWeight.bold,
+                                    color: hexStringToColor(theme.fontColor),
+                                    shadows: [
+                                      Shadow(
+                                          color: hexStringToColor(
+                                              theme.shadowColor!),
+                                          offset: const Offset(0, 1),
+                                          blurRadius: 10)
+                                    ],
+                                  ),
+                                  children: <TextSpan>[
+                                    TextSpan(
+                                      text: quote.quoteContent
+                                          .substring(0, currentWordStart.value),
+                                    ),
+                                    if (currentWordStart.value <
+                                        currentWordEnd.value)
+                                      TextSpan(
+                                        text: quote.quoteContent.substring(
+                                            currentWordStart.value,
+                                            currentWordEnd.value),
+                                        style: const TextStyle(
+                                          backgroundColor: AppColors.main,
+                                        ),
+                                      ),
+                                    if (currentWordEnd.value <
+                                        quote.quoteContent.length)
+                                      TextSpan(
+                                        text: quote.quoteContent
+                                            .substring(currentWordEnd.value),
+                                      ),
+                                  ],
+                                ),
+                              )
+                            : RichText(
+                                // RichText widget to highlight the current word being read
+                                textAlign: TextAlign.center,
+                                text: TextSpan(
+                                  style: TextStyle(
+                                    fontSize: 25,
+                                    fontFamily: theme.fontFamily,
+                                    fontWeight: FontWeight.bold,
+                                    color: hexStringToColor(theme.fontColor),
+                                    shadows: [
+                                      Shadow(
+                                          color: hexStringToColor(
+                                              theme.shadowColor!),
+                                          offset: const Offset(0, 1),
+                                          blurRadius: 10)
+                                    ],
+                                  ),
+                                  children: <TextSpan>[
+                                    TextSpan(text: quote.quoteContent),
+                                  ],
+                                ),
+                              ),
                       ),
                       const SizedBox(height: 20),
                       //check if author name is not null
@@ -161,6 +238,21 @@ class HomeScreen extends HookConsumerWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
+                          IconButton(
+                              onPressed: () {
+                                isTtsEnabled.value = !isTtsEnabled.value;
+                                // if TTS is enabled, start reading the quote content
+                                if (isTtsEnabled.value) {
+                                  ttsService.speak(quote.quoteContent);
+                                } else {
+                                  ttsService.stop();
+                                }
+                              },
+                              icon: const Icon(
+                                Icons.volume_up,
+                                color: Colors.white,
+                              )),
+                          const SizedBox(width: 10),
                           FavoriteButton(quote: quote, index: index),
                           const SizedBox(width: 10),
                           IconButton(

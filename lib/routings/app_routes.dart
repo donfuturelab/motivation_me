@@ -5,4 +5,5 @@ abstract class Routes {
   static const createQuote = '/create-quote';
   static const themes = '/themes';
   static const categories = '/categories';
+  static const voiceQuote = '/voice-quote'; // remove when done
 }
