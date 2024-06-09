@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:motivation_me/core/ultils/helpers/send_feedback.dart';
 
 import '../../core/constant/colors.dart';
 import 'reminder_bottomsheet.dart';
@@ -35,11 +36,37 @@ class MeScreen extends StatelessWidget {
                   child: Row(
                     children: [
                       const Icon(Icons.notifications,
-                          size: 20, color: Colors.white),
-                      const SizedBox(width: 10),
+                          size: 25, color: Colors.white),
+                      const SizedBox(width: 15),
                       Expanded(
                         child: Text(
                           'Reminders',
+                          style: context.textTheme.displayMedium
+                              ?.copyWith(fontWeight: FontWeight.w400),
+                        ),
+                      ),
+                      const Icon(
+                          size: 20,
+                          Icons.arrow_forward_ios_rounded,
+                          color: AppColors.lightBlack),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 10),
+                const Divider(
+                  color: AppColors.lightBlack,
+                  thickness: 0.5,
+                ),
+                const SizedBox(height: 10),
+                GestureDetector(
+                  onTap: () => sendFeedback(),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.mail, size: 25, color: Colors.white),
+                      const SizedBox(width: 15),
+                      Expanded(
+                        child: Text(
+                          'Feedback',
                           style: context.textTheme.displayMedium
                               ?.copyWith(fontWeight: FontWeight.w400),
                         ),

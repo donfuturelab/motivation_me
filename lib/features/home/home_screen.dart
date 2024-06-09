@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -57,23 +58,26 @@ class HomeScreen extends HookConsumerWidget {
     useEffect(() {
       animationController.forward();
       if (!ConfigurationStorage.getIsSetInitReminder()) {
-        Timer(const Duration(seconds: 15), () {
-          showModalBottomSheet(
-              context: context,
-              isScrollControlled: true,
-              clipBehavior: Clip.antiAlias,
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(20),
-                  topRight: Radius.circular(20),
+        Timer(
+          const Duration(seconds: 15),
+          () {
+            showModalBottomSheet(
+                context: context,
+                isScrollControlled: true,
+                clipBehavior: Clip.antiAlias,
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20),
+                  ),
                 ),
-              ),
-              builder: (BuildContext bc) {
-                return SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.6,
-                    child: const ReminderInitBottomsheet());
-              });
-        });
+                builder: (BuildContext bc) {
+                  return SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.6,
+                      child: const ReminderInitBottomsheet());
+                });
+          },
+        );
       }
       // listen to pageController to fetch more quotes
       pageController.addListener(() {
@@ -239,19 +243,34 @@ class HomeScreen extends HookConsumerWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           IconButton(
-                              onPressed: () {
-                                isTtsEnabled.value = !isTtsEnabled.value;
-                                // if TTS is enabled, start reading the quote content
-                                if (isTtsEnabled.value) {
-                                  ttsService.speak(quote.quoteContent);
-                                } else {
-                                  ttsService.stop();
-                                }
-                              },
-                              icon: const Icon(
-                                Icons.volume_up,
-                                color: Colors.white,
-                              )),
+                            onPressed: () {
+                              isTtsEnabled.value = !isTtsEnabled.value;
+                              // if TTS is enabled, start reading the quote content
+                              if (isTtsEnabled.value) {
+                                ttsService.speak(quote.quoteContent);
+                              } else {
+                                ttsService.stop();
+                              }
+                            },
+                            icon: CircleAvatar(
+                              //create circle with transparent background and having white border color
+                              backgroundColor: isTtsEnabled.value
+                                  ? AppColors.textColor
+                                  : Colors.transparent,
+
+                              radius: 20,
+                              child: SvgPicture.asset(
+                                'assets/images/icons/voice_enable.svg',
+                                width: 25,
+                                height: 25,
+                                colorFilter: ColorFilter.mode(
+                                    isTtsEnabled.value
+                                        ? AppColors.black
+                                        : Colors.white,
+                                    BlendMode.srcIn),
+                              ),
+                            ),
+                          ),
                           const SizedBox(width: 10),
                           FavoriteButton(quote: quote, index: index),
                           const SizedBox(width: 10),
