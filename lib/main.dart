@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:motivation_me/core/notification/notification_helper.dart';
 
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
@@ -13,6 +14,7 @@ import 'core/constant/revenue_cat.dart';
 import 'core/database/check_and_update_database.dart';
 import 'core/local_storage/configuration_storage.dart';
 import 'core/local_storage/quote_theme_storage.dart';
+import 'core/notification/notification_init_main.dart';
 import 'core/notification/notification_service.dart';
 import 'core/store_config/config_sdk.dart';
 import 'core/store_config/store_config.dart';
@@ -31,11 +33,13 @@ void main() async {
   await GetStorage.init('ConfigurationStorage');
   // await QuoteThemeStorage().remove('quoteTheme');
 
-  if (currentDbVersion == 2 &&
+  if (currentDbVersion == 3 &&
       ConfigurationStorage.getIsResetSelectedCategory() == 0) {
     await ConfigurationStorage.resetSelectedCategory();
   } // Reset selected category if db version is 2 and mark isResetSelectedCategory is 1
   // change for new version
+
+  // check if remaining notification is less than 10 then init new notification
 
   await QuoteThemeStorage().init();
 
@@ -43,6 +47,10 @@ void main() async {
 
   await NotificationService.initNotification();
   tz.initializeTimeZones();
+
+  // check if remaining notification is less than 10 then init new notification
+  await initNotificationWhenLessThan10();
+  // await checkNoti();
 
   // InitialBindings();
   // await di.init();

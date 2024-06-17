@@ -13,6 +13,23 @@ class ConfigurationStorage {
     await _box.write('isResetSelectedCategory', 1);
   }
 
+  static bool getIsVoiceSpeakActive() {
+    _box.read('isVoiceSpeakActive') ?? 0;
+    if (_box.read('isVoiceSpeakActive') == 1) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  static Future<void> saveIsVoiceSpeakActive(bool isActive) async {
+    if (isActive) {
+      await _box.write('isVoiceSpeakActive', 1);
+    } else {
+      await _box.write('isVoiceSpeakActive', 0);
+    }
+  }
+
   static getIsResetSelectedCategory() {
     return _box.read('isResetSelectedCategory') ?? 0;
   }

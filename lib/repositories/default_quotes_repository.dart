@@ -106,24 +106,25 @@ class DefaultQuotesRepository {
   }
 
   final _rawQueryForSpecificCategory =
-      ''' SELECT dq.id, dq.quote_content, dq.author_id, dq.category_id, a.author_name,
+      ''' SELECT dq.id, dq.quote_content, dq.author_id, a.author_name,
             CASE WHEN l.id IS NOT NULL THEN 1 ELSE 0 END as is_liked
             FROM default_quotes dq
             LEFT JOIN authors a ON dq.author_id = a.id
+            INNER JOIN quote_categories qc ON dq.id = qc.quote_id
             LEFT JOIN likes l ON (dq.id = l.quote_id) AND (l.quote_source = 'default')
-            WHERE dq.category_id = ? 
+            WHERE qc.category_id = ? 
             ORDER BY RANDOM()
             LIMIT ?
       ''';
   final _rawQueryForNotMentionCategory =
-      ''' SELECT dq.id, dq.quote_content, dq.author_id, dq.category_id, a.author_name,
+      ''' SELECT dq.id, dq.quote_content, dq.author_id, a.author_name,
             CASE WHEN l.id IS NOT NULL THEN 1 ELSE 0 END as is_liked
             FROM default_quotes dq
-            LEFT JOIN authors a ON dq.author_id = a.id
+            LEFT JOIN authors a ON dq.author_id = a.id 
             LEFT JOIN likes l ON (dq.id = l.quote_id) AND (l.quote_source = 'default')
             ORDER BY RANDOM()
-            LIMIT ?
-      ''';
+            LIMIT ? 
+      '''; // not ok quote need to handle
 
   final _rawQueryForQuoteNotGeneralNotLiked = '''
             SELECT dq.id, dq.quote_content, dq.author_id, a.author_name,
@@ -135,7 +136,7 @@ class DefaultQuotesRepository {
             WHERE qc.category_id = ? 
             ORDER BY RANDOM()
             LIMIT 20
-          ''';
+          '''; //ok quote
 }
 
 @riverpod

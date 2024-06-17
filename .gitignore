@@ -9,6 +9,8 @@
 .history
 .svn/
 migrate_working_dir/
+.env
+
 
 # IntelliJ related
 *.iml
@@ -31,6 +33,7 @@ migrate_working_dir/
 .pub/
 /build/
 /assets/database/
+/lib/env/eng.g.dart
 
 # Symbolication related
 app.*.symbols

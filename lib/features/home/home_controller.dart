@@ -16,6 +16,7 @@ class HomeController extends _$HomeController {
   @override
   FutureOr<List<DefaultQuote>> build() async {
     final category = ref.watch(selectedCategoryProvider);
+    print('selected category home: ${category.id}');
 
     final List<DefaultQuote> quotes = await ref
         .read(defaultQuotesRepositoryProvider)
@@ -26,13 +27,12 @@ class HomeController extends _$HomeController {
   Future<void> toggleLikeQuote(DefaultQuote quote, int index) async {
     // state = const AsyncLoading();
     if (quote.isLiked) {
-      await ref
-          .read(likesRepositoryProvider)
-          .unlikeQuote(quoteId: quote.id, quoteSource: QuoteSource.userQuote);
+      await ref.read(likesRepositoryProvider).unlikeQuote(
+          quoteId: quote.id, quoteSource: QuoteSource.defaultQuote);
     } else {
       await ref
           .read(likesRepositoryProvider)
-          .likeQuote(quoteId: quote.id, quoteSource: QuoteSource.userQuote);
+          .likeQuote(quoteId: quote.id, quoteSource: QuoteSource.defaultQuote);
     }
     // List<DefaultQuote> quoteList = state.valueOrNull!;
     List<DefaultQuote> quoteList = List<DefaultQuote>.from(state.value ?? []);

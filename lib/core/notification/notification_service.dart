@@ -91,7 +91,18 @@ class NotificationService {
     );
   }
 
-  static Future<void> cancelNotification(int id) async {
-    await flutterLocalNotificationsPlugin.cancel(id);
+  static Future<List<PendingNotificationRequest>> getRemainNoti() async {
+    return await flutterLocalNotificationsPlugin.pendingNotificationRequests();
+  }
+
+  static Future<void> cancelQuoteNotifications() async {
+    // final timesPerDay = ConfigurationStorage.getTimePerDay();
+
+    await flutterLocalNotificationsPlugin.cancelAll();
+
+    // for (int i = 0; i < timesPerDay * maxDaysForScheduleNotification; i++) {
+    //   await flutterLocalNotificationsPlugin.cancelAll();
+    // }
+    // print('cancel notification');
   }
 }

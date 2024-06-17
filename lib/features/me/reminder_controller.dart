@@ -162,28 +162,26 @@ class ReminderController extends _$ReminderController {
 
   //init reminder
   void initReminder() async {
-    final dateTimes = NotificationHelper.generateDateTimes(
-        daysOfWeek: state.reminderDays,
-        timesPerDay: state.timePerDay,
-        startAt: state.startTime,
-        endAt: state.endTime);
     final isAcceptNotification = ConfigurationStorage.getIsAcceptNotification();
 
     if (isAcceptNotification) {
-      NotificationService.cancelNotification(0);
-      NotificationHelper.scheduleQuoteReminder(
-          dateTimes: dateTimes,
-          daysOfWeek: state.reminderDays,
-          timesPerDay: state.timePerDay);
+      NotificationService.cancelQuoteNotifications();
+      await NotificationHelper.createReminders(
+          timesPerDay: state.timePerDay,
+          startTime: state.startTime,
+          endTime: state.endTime,
+          reminderDays: state.reminderDays);
+
       await ConfigurationStorage.isSetInitReminder(true);
     } else {
       NotificationService.requestPermissions();
       await ConfigurationStorage.isAcceptNotification(true);
-      await NotificationService.cancelNotification(0);
-      NotificationHelper.scheduleQuoteReminder(
-          dateTimes: dateTimes,
-          daysOfWeek: state.reminderDays,
-          timesPerDay: state.timePerDay);
+      await NotificationService.cancelQuoteNotifications();
+      await NotificationHelper.createReminders(
+          timesPerDay: state.timePerDay,
+          startTime: state.startTime,
+          endTime: state.endTime,
+          reminderDays: state.reminderDays);
       await ConfigurationStorage.isSetInitReminder(true);
     }
   }
@@ -196,28 +194,30 @@ class ReminderController extends _$ReminderController {
     await ConfigurationStorage.saveReminderDays(state.reminderDays);
     await ConfigurationStorage.saveTimePerDay(state.timePerDay);
 
-    final dateTimes = NotificationHelper.generateDateTimes(
-        daysOfWeek: state.reminderDays,
-        timesPerDay: state.timePerDay,
-        startAt: state.startTime,
-        endAt: state.endTime);
+    // final dateTimes = NotificationHelper.generateDateTimes(
+    //     daysOfWeek: state.reminderDays,
+    //     timesPerDay: state.timePerDay,
+    //     startAt: state.startTime,
+    //     endAt: state.endTime);
 
     final isAcceptNotification = ConfigurationStorage.getIsAcceptNotification();
 
     if (isAcceptNotification) {
-      NotificationService.cancelNotification(0);
-      NotificationHelper.scheduleQuoteReminder(
-          dateTimes: dateTimes,
-          daysOfWeek: state.reminderDays,
-          timesPerDay: state.timePerDay);
+      NotificationService.cancelQuoteNotifications();
+      await NotificationHelper.createReminders(
+          timesPerDay: state.timePerDay,
+          startTime: state.startTime,
+          endTime: state.endTime,
+          reminderDays: state.reminderDays);
     } else {
       NotificationService.requestPermissions();
       ConfigurationStorage.isAcceptNotification(true);
-      NotificationService.cancelNotification(0);
-      NotificationHelper.scheduleQuoteReminder(
-          dateTimes: dateTimes,
-          daysOfWeek: state.reminderDays,
-          timesPerDay: state.timePerDay);
+      NotificationService.cancelQuoteNotifications();
+      await NotificationHelper.createReminders(
+          timesPerDay: state.timePerDay,
+          startTime: state.startTime,
+          endTime: state.endTime,
+          reminderDays: state.reminderDays);
     }
   }
 }
