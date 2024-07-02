@@ -2,7 +2,10 @@ import 'dart:io';
 import 'package:timezone/timezone.dart' as tz;
 
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:get/get.dart';
+
+
+import '../../routings/app_go_pages.dart';
+import '../../routings/app_routes.dart';
 
 class NotificationService {
   static final flutterLocalNotificationsPlugin =
@@ -26,7 +29,15 @@ class NotificationService {
         onDidReceiveNotificationResponse:
             (NotificationResponse notificationResponse) async {
       // this is where you can handle notification tap
-      Get.toNamed('/');
+      if (notificationResponse.payload != null) {
+        final quoteId = int.tryParse(notificationResponse.payload!);
+
+        // navigate to main screen with quote id
+        // need to pass pathParameters to navigate to main screen with quote id
+        // Routes.mainScreen should contain a path parameter 'id'
+        appRouters.goNamed(Routes.mainScreen,
+            pathParameters: {'id': quoteId.toString()});
+      }
     });
   }
 
@@ -87,7 +98,7 @@ class NotificationService {
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
       payload: payload,
-      matchDateTimeComponents: DateTimeComponents.dayOfWeekAndTime,
+      // matchDateTimeComponents: DateTimeComponents.dateAndTime, // for schedule notification at exact time comment it
     );
   }
 

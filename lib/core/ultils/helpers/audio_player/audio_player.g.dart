@@ -6,7 +6,7 @@ part of 'audio_player.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$audioPlayerHash() => r'c9b8c659bf54fb74ed9b9dbe8b49a63db625445e';
+String _$audioPlayerHash() => r'0f9f941057440935279fb5ed67e9d88ff0d6549a';
 
 /// See also [audioPlayer].
 @ProviderFor(audioPlayer)
@@ -20,7 +20,7 @@ final audioPlayerProvider = AutoDisposeProvider<AudioPlayer>.internal(
 );
 
 typedef AudioPlayerRef = AutoDisposeProviderRef<AudioPlayer>;
-String _$fetchAndPlayTTSHash() => r'a00d44183eb8572dab4987c975a39bf8445474fc';
+String _$fetchAndPlayTTSHash() => r'25042dd23bd956b4f7d8152fc69f033f15aa11ff';
 
 /// See also [FetchAndPlayTTS].
 @ProviderFor(FetchAndPlayTTS)

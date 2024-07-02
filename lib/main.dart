@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:motivation_me/core/notification/notification_helper.dart';
+import 'package:intl/intl.dart';
 
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
@@ -50,10 +50,18 @@ void main() async {
 
   // check if remaining notification is less than 10 then init new notification
   await initNotificationWhenLessThan10();
-  // await checkNoti();
 
-  // InitialBindings();
-  // await di.init();
+  // await NotificationService.cancelQuoteNotifications();
+
+  //get local language code using intl package
+  if (ConfigurationStorage.getLanguageCode() == '') {
+    String localLanguageCode = Intl.getCurrentLocale().substring(0, 2);
+    await ConfigurationStorage.saveLanguageCode(localLanguageCode);
+  }
+
+  // increase open app count
+  await ConfigurationStorage.increaseOpenAppCount();
+
   runApp(const ProviderScope(child: MyApp()));
 }
 

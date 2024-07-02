@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:motivation_me/core/local_storage/configuration_storage.dart';
 import 'package:motivation_me/core/ultils/helpers/send_feedback.dart';
 
 import '../../core/constant/colors.dart';
+import '../../core/constant/languages.dart';
+import '../../core/ultils/helpers/in_app_review_service/in_app_review_service.dart';
 import 'reminder_bottomsheet.dart';
 
 class MeScreen extends StatelessWidget {
@@ -57,7 +60,37 @@ class MeScreen extends StatelessWidget {
                   color: AppColors.lightBlack,
                   thickness: 0.5,
                 ),
+                GestureDetector(
+                  onTap: () async {
+                    final language = await showLanguageBottomSheet(context);
+                    if (language != null) {
+                      ConfigurationStorage.saveLanguageCode(language['code']!);
+                    }
+                  },
+                  child: Row(
+                    children: [
+                      const Icon(Icons.language, size: 25, color: Colors.white),
+                      const SizedBox(width: 15),
+                      Expanded(
+                        child: Text(
+                          'Translate Language',
+                          style: context.textTheme.displayMedium
+                              ?.copyWith(fontWeight: FontWeight.w400),
+                        ),
+                      ),
+                      const SizedBox(width: 15),
+                      const Icon(
+                          size: 20,
+                          Icons.arrow_forward_ios_rounded,
+                          color: AppColors.lightBlack),
+                    ],
+                  ),
+                ),
                 const SizedBox(height: 10),
+                const Divider(
+                  color: AppColors.lightBlack,
+                  thickness: 0.5,
+                ),
                 GestureDetector(
                   onTap: () => sendFeedback(),
                   child: Row(
@@ -71,6 +104,34 @@ class MeScreen extends StatelessWidget {
                               ?.copyWith(fontWeight: FontWeight.w400),
                         ),
                       ),
+                      const Icon(
+                          size: 20,
+                          Icons.arrow_forward_ios_rounded,
+                          color: AppColors.lightBlack),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 10),
+                const Divider(
+                  color: AppColors.lightBlack,
+                  thickness: 0.5,
+                ),
+                GestureDetector(
+                  onTap: () async {
+                    await InAppReviewService().openStoreListing();
+                  },
+                  child: Row(
+                    children: [
+                      const Icon(Icons.language, size: 25, color: Colors.white),
+                      const SizedBox(width: 15),
+                      Expanded(
+                        child: Text(
+                          'Rate app on store',
+                          style: context.textTheme.displayMedium
+                              ?.copyWith(fontWeight: FontWeight.w400),
+                        ),
+                      ),
+                      const SizedBox(width: 15),
                       const Icon(
                           size: 20,
                           Icons.arrow_forward_ios_rounded,
@@ -106,6 +167,77 @@ class MeScreen extends StatelessWidget {
           topRight: Radius.circular(20),
         ),
       ),
+    );
+  }
+
+  Future<Map<String, String>?> showLanguageBottomSheet(BuildContext context) {
+    return showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (BuildContext context) {
+        return DraggableScrollableSheet(
+          initialChildSize: 0.7,
+          minChildSize: 0.5,
+          maxChildSize: 0.9,
+          expand: false,
+          builder: (_, controller) {
+            return ClipRRect(
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(20),
+              ),
+              child: Container(
+                color: AppColors.black,
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Text(
+                        'Select Language',
+                        style: Theme.of(context).textTheme.displayLarge,
+                      ),
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: ListView.builder(
+                          controller: controller,
+                          itemCount: languages.length,
+                          itemBuilder: (context, index) {
+                            return Container(
+                              decoration: const BoxDecoration(
+                                //create only bottom border
+                                border: Border(
+                                  bottom: BorderSide(
+                                    color: AppColors.middleBlack,
+                                    width: 0.5,
+                                  ),
+                                ),
+                              ),
+                              child: ListTile(
+                                title: Text(
+                                  languages[index]['name']!,
+                                  style: context.textTheme.displayMedium,
+                                ),
+                                onTap: () {
+                                  // Handle language selection
+                                  Navigator.pop(context, languages[index]);
+                                },
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
     );
   }
 }

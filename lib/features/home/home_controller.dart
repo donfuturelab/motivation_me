@@ -14,13 +14,28 @@ part 'home_controller.g.dart';
 @riverpod
 class HomeController extends _$HomeController {
   @override
-  FutureOr<List<DefaultQuote>> build() async {
+  FutureOr<List<DefaultQuote>> build({int? quoteId}) async {
     final category = ref.watch(selectedCategoryProvider);
-    print('selected category home: ${category.id}');
 
-    final List<DefaultQuote> quotes = await ref
-        .read(defaultQuotesRepositoryProvider)
-        .getQuotesByCategory(category.id);
+    final List<DefaultQuote> quotes = [];
+
+    if (quoteId != null) {
+      // check if the quoteID is not null and fetch the specific quote
+      final quote = await ref
+          .watch(defaultQuotesRepositoryProvider)
+          .getDefaultQuote(quoteId);
+      quotes.add(quote);
+
+      // add more quotes after fetching the specific quote
+      quotes.addAll(await ref
+          .watch(defaultQuotesRepositoryProvider)
+          .getQuotesByCategory(category.id));
+    } else {
+      quotes.addAll(await ref
+          .watch(defaultQuotesRepositoryProvider)
+          .getQuotesByCategory(category.id));
+    }
+
     return quotes;
   }
 

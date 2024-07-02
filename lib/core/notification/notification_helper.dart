@@ -67,7 +67,7 @@ class NotificationHelper {
       if (daysOfWeek.contains(currentDate.weekday)) {
         for (var time in times) {
           var scheduledTime = DateTime(currentDate.year, currentDate.month,
-              currentDate.day, time.hour, time.minute);
+              currentDate.day, time.hour, time.minute, 0);
           dateTimes.add(scheduledTime);
           if (dateTimes.length ==
               maxDaysForScheduleNotification * timesPerDay) {
@@ -76,10 +76,6 @@ class NotificationHelper {
         }
       }
       currentDate = currentDate.add(const Duration(days: 1));
-    }
-    for (var dateTime in dateTimes) {
-      print(
-          'dateTime: ${dateTime.month} ${dateTime.day}, ${dateTime.hour}, ${dateTime.minute}');
     }
     return dateTimes;
   }
@@ -95,26 +91,12 @@ class NotificationHelper {
     quotes = await defaulQuoteRepo.getSomeRandomQuotes(
         numerOfQuotes: numberOfQuotes);
 
-    // need to loop through the times and days of the week
-    // and based on the list of quotes, schedule the notifications
-
-    // for (var i = 0; i < daysOfWeek.length; i++) {
-    //   for (var j = 0; j < timesPerDay; j++) {
-    //     await NotificationService.scheduleNotification(
-    //         body: quotes[i * timesPerDay + j].quoteContent,
-    //         scheduledTime: dateTimes[j],
-    //         payload: quotes[i * timesPerDay + j].id.toString());
-    //   }
-    //   print('scheduled notification for ${daysOfWeek[i]}');
-    // }
-
     for (var i = 0; i < dateTimes.length; i++) {
       await NotificationService.scheduleNotification(
           id: i,
           body: quotes[i].quoteContent,
           scheduledTime: dateTimes[i],
           payload: quotes[i].id.toString());
-      print('scheduled notification for ${dateTimes[i]} - id $i');
     }
   }
 

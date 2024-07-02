@@ -9,7 +9,6 @@ part 'audio_player.g.dart';
 
 @riverpod
 AudioPlayer audioPlayer(AudioPlayerRef ref) {
-  print('audio player init');
   return AudioPlayer();
 }
 
@@ -26,14 +25,12 @@ class FetchAndPlayTTS extends _$FetchAndPlayTTS {
     final audioBytes = await fetchTTS(text);
     await player.setAudioSource(StreamCustomSource(audioBytes));
     await player.play();
-    print('success play');
   }
 
   // function to stop the audio
   Future<void> stopSpeak(AudioPlayer player) async {
     // await ref.watch(audioPlayerProvider).stop();
     await player.stop();
-    print('stop audio');
   }
 }
 

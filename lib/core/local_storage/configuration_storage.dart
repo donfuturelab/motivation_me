@@ -108,4 +108,21 @@ class ConfigurationStorage {
   static Future<void> remove(String key) async {
     await _box.remove(key);
   }
+
+  static Future<void> saveLanguageCode(String languageCode) async {
+    await _box.write('languageCode', languageCode);
+  }
+
+  static String getLanguageCode() {
+    return _box.read('languageCode') ?? '';
+  }
+
+  static Future<void> increaseOpenAppCount() async {
+    final count = getOpenAppCount();
+    await _box.write('openAppCount', count + 1);
+  }
+
+  static int getOpenAppCount() {
+    return _box.read('openAppCount') ?? 0;
+  }
 }

@@ -13,17 +13,10 @@ import '../themes/themes_screen.dart';
 // import 'main_controller.dart';
 
 class MainScreen extends ConsumerWidget {
-  MainScreen({super.key});
+  final int? quoteId;
+  MainScreen({super.key, this.quoteId});
 
   // final _mainController = Get.find<MainController>();
-
-  final List<Widget> _screen = <Widget>[
-    const HomeScreen(),
-    const MyQuotesScreen(),
-    // const CreateQuoteScreen(),
-    const ThemesScreen(),
-    const MeScreen()
-  ];
 
   final _icons = <IconData>[
     Icons.format_quote_rounded,
@@ -51,6 +44,14 @@ class MainScreen extends ConsumerWidget {
         },
       );
     }
+
+    final List<Widget> screen = <Widget>[
+      HomeScreen(quoteId: quoteId),
+      const MyQuotesScreen(),
+      // const CreateQuoteScreen(),
+      const ThemesScreen(),
+      const MeScreen()
+    ];
 
     Widget buildNavigationBar() {
       return BottomAppBar(
@@ -125,7 +126,7 @@ class MainScreen extends ConsumerWidget {
 
     return Scaffold(
       extendBody: true,
-      body: _screen[selectedTab],
+      body: screen[selectedTab],
       bottomNavigationBar: Stack(
         children: [
           buildNavigationBar(),

@@ -282,7 +282,7 @@ class ThemesScreen extends HookConsumerWidget {
                     child: Row(
                       children: [
                         Text(
-                          'Your themes',
+                          'Selected themes',
                           style: context.textTheme.displayMedium,
                         ),
                         const Spacer(),
@@ -296,99 +296,7 @@ class ThemesScreen extends HookConsumerWidget {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 20),
-                  //create list of background but can scroll horizontal and the first item have left margin 16
-                  // SizedBox(
-                  //   height: 150,
-                  //   width: double.infinity,
-                  //   child: ListView.builder(
-                  //     scrollDirection: Axis.horizontal,
-                  //     itemCount: controller.selectedThemes.length + 1,
-                  //     itemBuilder: (context, index) {
-                  //       SelectedTheme? theme =
-                  //           index == controller.selectedThemes.length
-                  //               ? null
-                  //               : controller.selectedThemes[index];
-
-                  //       return theme == null
-                  //           ? Container(
-                  //               margin:
-                  //                   const EdgeInsets.only(left: 20, right: 16),
-                  //               width: 100,
-                  //               height: 150,
-                  //               decoration: BoxDecoration(
-                  //                   borderRadius: BorderRadius.circular(10),
-                  //                   color: AppColors.black,
-                  //                   border: Border.all(color: Colors.white)),
-                  //               child: const Icon(
-                  //                 Icons.add,
-                  //                 size: 50,
-                  //                 color: Colors.white,
-                  //               ),
-                  //             )
-                  //           : Container(
-                  //               margin: index == 0
-                  //                   ? const EdgeInsets.only(left: 16)
-                  //                   : const EdgeInsets.only(left: 20),
-                  //               width: 100,
-                  //               height: 150,
-                  //               alignment: Alignment.topRight,
-                  //               decoration: BoxDecoration(
-                  //                   borderRadius: BorderRadius.circular(10),
-                  //                   image: DecorationImage(
-                  //                       image: AssetImage(
-                  //                           '$rootBackgroundUrl${theme.imageCode}.jpg'),
-                  //                       fit: BoxFit.cover)),
-                  //               child: Stack(
-                  //                 children: [
-                  //                   Center(
-                  //                     child: Text(
-                  //                       'Abcd',
-                  //                       style: TextStyle(
-                  //                           fontSize: (controller
-                  //                                   .selectedThemes[index]
-                  //                                   .fontSize!)
-                  //                               .toDouble(),
-                  //                           fontWeight: FontWeight.bold,
-                  //                           // fontFamily: _controller
-                  //                           //     .selectedThemes[index].fontFamily,
-                  //                           fontFamily: theme.fontFamily,
-                  //                           color: hexStringToColor(
-                  //                               theme.fontColor)),
-                  //                     ),
-                  //                   ),
-                  //                   Align(
-                  //                     alignment: Alignment.topRight,
-                  //                     child: isEditedUserTheme.value
-                  //                         ? IconButton(
-                  //                             onPressed: () => ref
-                  //                                 .read(selectedThemesProvider
-                  //                                     .notifier)
-                  //                                 .removeTheme(index),
-                  //                             icon: const CircleAvatar(
-                  //                               backgroundColor: AppColors.main,
-                  //                               radius: 12,
-                  //                               child: Icon(
-                  //                                 Icons.remove,
-                  //                                 color: Colors.black,
-                  //                                 size: 20,
-                  //                               ),
-                  //                             ),
-                  //                           )
-                  //                         : const Padding(
-                  //                             padding: EdgeInsets.only(
-                  //                                 top: 10.0, right: 10),
-                  //                             child: Icon(Icons.check_circle,
-                  //                                 color: Colors.white,
-                  //                                 size: 25),
-                  //                           ),
-                  //                   ),
-                  //                 ],
-                  //               ),
-                  //             );
-                  //     },
-                  //   ),
-                  // ),
+                  const SizedBox(height: 10),
                   SelectedThemes(isEditedUserTheme: isEditedUserTheme.value),
                   const SizedBox(height: 20),
                   buildFreeThemes(controller.freeThemes),
@@ -427,9 +335,11 @@ class SelectedThemes extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedThemes = ref.watch(selectedThemesProvider);
 
-    return SizedBox(
-      height: 150,
+    return Container(
+      color: AppColors.lightBlack.withOpacity(0.5),
+      height: 190,
       width: double.infinity,
+      padding: const EdgeInsets.symmetric(vertical: 20),
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: selectedThemes.length + 1,
