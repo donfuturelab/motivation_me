@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:motivation_me/core/context_provider/context_provider.dart';
+import '../../core/local_storage/configuration_storage.dart';
+import '/features/mood_asking/mood_asking_screen.dart';
 import '/features/main_screen/selected_tab_provider.dart';
 
 import '../../core/constant/colors.dart';
 
-import '../create_quote/create_quote_screen.dart';
+// import '../create_quote/create_quote_screen.dart';
 import '../home/home_screen.dart';
 import '../me/me_screen.dart';
-import '../my_quotes/my_quotes_screen.dart';
 import '../themes/themes_screen.dart';
 // import 'main_controller.dart';
 
-class MainScreen extends ConsumerWidget {
+class MainScreen extends HookConsumerWidget {
   final int? quoteId;
   MainScreen({super.key, this.quoteId});
 
@@ -20,7 +23,7 @@ class MainScreen extends ConsumerWidget {
 
   final _icons = <IconData>[
     Icons.format_quote_rounded,
-    Icons.edit_document,
+    // Icons.edit_document,
     Icons.brush,
     Icons.person,
   ];
@@ -29,25 +32,37 @@ class MainScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedTab = ref.watch(selectedTabProvider);
 
-    final statusBarHeigh = MediaQuery.of(context).padding.top;
-
-    //create bottomsheet for create quote screen
-    void showCreateQuoteBottomSheet() {
+    void showMoodQuoteBottomSheet() {
       showModalBottomSheet(
         isScrollControlled: true,
         context: context,
         builder: (context) {
           return Container(
-              color: AppColors.black,
-              padding: EdgeInsets.only(top: statusBarHeigh),
-              child: const CreateQuoteScreen());
+              color: Colors.transparent,
+              // padding: EdgeInsets.only(top: statusBarHeigh),
+              child: const MoodAskingScreen());
         },
       );
     }
 
+    //create bottomsheet for create quote screen
+    // void showCreateQuoteBottomSheet() {
+    //   showModalBottomSheet(
+    //     isScrollControlled: true,
+    //     context: context,
+    //     builder: (context) {
+    //       return Container(
+    //           color: AppColors.black,
+    //           padding: EdgeInsets.only(top: statusBarHeigh),
+    //           child: const CreateQuoteScreen());
+    //     },
+    //   );
+    // }
+
     final List<Widget> screen = <Widget>[
       HomeScreen(quoteId: quoteId),
-      const MyQuotesScreen(),
+      // const MoodAskingScreen(),
+      // const MyQuotesScreen(),
       // const CreateQuoteScreen(),
       const ThemesScreen(),
       const MeScreen()
@@ -60,7 +75,7 @@ class MainScreen extends ConsumerWidget {
         shape: const CircularNotchedRectangle(),
         height: 80,
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          // mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             IconButton(
               onPressed: () {
@@ -70,12 +85,28 @@ class MainScreen extends ConsumerWidget {
                   selectedTab: selectedTab, index: 0, icons: _icons),
             ),
             IconButton(
-                onPressed: () {
-                  ref.read(selectedTabProvider.notifier).selectTab(1);
-                },
-                icon: BottomBarIcon(
-                    selectedTab: selectedTab, index: 1, icons: _icons)),
-            const SizedBox(width: 50),
+              onPressed: () => showMoodQuoteBottomSheet(),
+              icon: const Icon(
+                Icons.emoji_emotions,
+                color: AppColors.textColor,
+                size: 45,
+              ),
+            ),
+            // IconButton(
+            //     onPressed: () {
+            //       ref.read(selectedTabProvider.notifier).selectTab(1);
+            //     },
+            //     icon: BottomBarIcon(
+            //         selectedTab: selectedTab, index: 1, icons: _icons)),
+            // const SizedBox(width: 50),
+            const Spacer(),
+            IconButton(
+              onPressed: () {
+                ref.read(selectedTabProvider.notifier).selectTab(1);
+              },
+              icon: BottomBarIcon(
+                  selectedTab: selectedTab, index: 1, icons: _icons),
+            ),
             IconButton(
               onPressed: () {
                 ref.read(selectedTabProvider.notifier).selectTab(2);
@@ -83,46 +114,26 @@ class MainScreen extends ConsumerWidget {
               icon: BottomBarIcon(
                   selectedTab: selectedTab, index: 2, icons: _icons),
             ),
-            IconButton(
-              onPressed: () {
-                ref.read(selectedTabProvider.notifier).selectTab(3);
-              },
-              icon: BottomBarIcon(
-                  selectedTab: selectedTab, index: 3, icons: _icons),
-            ),
           ],
         ),
       );
     }
 
-    // Widget navigationBar() {
-    //   return BottomNavigationBar(
-    //     type: BottomNavigationBarType.fixed,
-    //     backgroundColor: Colors.transparent,
-    //     showSelectedLabels: false,
-    //     showUnselectedLabels: false,
-    //     items: List.generate(
-    //       _icons.length,
-    //       (index) => BottomNavigationBarItem(
-    //         icon: CircleAvatar(
-    //             radius: 25,
-    //             backgroundColor: selectedTab == index
-    //                 ? AppColors.main
-    //                 : Colors.black.withOpacity(0.4),
-    //             child: Icon(
-    //               _icons[index],
-    //               size: 30,
-    //               color: Colors.white,
-    //             )),
-    //         label: '',
-    //       ),
-    //     ),
-    //     currentIndex: selectedTab,
-    //     onTap: (index) {
-    //       ref.read(selectedTabProvider.notifier).selectTab(index);
-    //     },
-    //   );
-    // }
+    useEffect(() {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        ref.read(selectedTabProvider.notifier).selectTab(0);
+        // check if user has not yet opened the app today
+        // show mood quote bottom sheet
+        if (!ConfigurationStorage.isTodayOpenedApp()) {
+          showMoodQuoteBottomSheet();
+          ConfigurationStorage.saveLastOpenAppDate(DateTime.now());
+        }
+
+        ref.read(topPaddingProvider.notifier).state =
+            MediaQuery.of(context).padding.top.toDouble();
+      });
+      return;
+    }, []);
 
     return Scaffold(
       extendBody: true,
@@ -130,26 +141,27 @@ class MainScreen extends ConsumerWidget {
       bottomNavigationBar: Stack(
         children: [
           buildNavigationBar(),
-          Positioned(
-            top: 20,
-            left: MediaQuery.of(context).size.width / 2 - 20,
-            child: SizedBox(
-              width: 40,
-              height: 40,
-              child: FloatingActionButton(
-                onPressed: () {
-                  showCreateQuoteBottomSheet();
-                },
-                backgroundColor: AppColors.middleBlack.withOpacity(0.8),
-                shape: const CircleBorder(),
-                elevation: 0,
-                child: const Icon(
-                  Icons.add,
-                  color: AppColors.textColor,
-                ),
-              ),
-            ),
-          )
+          // Positioned(
+          //   top: 10,
+          //   left: MediaQuery.of(context).size.width / 2 - 30,
+          //   child: SizedBox(
+          //     width: 60,
+          //     height: 60,
+          //     child: FloatingActionButton(
+          //       onPressed: () {
+          //         showMoodQuoteBottomSheet();
+          //       },
+          //       backgroundColor: AppColors.middleBlack.withOpacity(0.8),
+          //       shape: const CircleBorder(),
+          //       elevation: 0,
+          //       child: const Icon(
+          //         Icons.emoji_emotions,
+          //         color: AppColors.textColor,
+          //         size: 35,
+          //       ),
+          //     ),
+          //   ),
+          // )
         ],
       ),
     );

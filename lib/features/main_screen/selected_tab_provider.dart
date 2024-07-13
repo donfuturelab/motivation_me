@@ -7,7 +7,11 @@ part 'selected_tab_provider.g.dart';
 class SelectedTab extends _$SelectedTab {
   @override
   int build() {
-    return 0;
+    if (DateTime.now().year == 2024) {
+      return 1;
+    } else {
+      return 0;
+    }
   }
 
   void selectTab(int index) {

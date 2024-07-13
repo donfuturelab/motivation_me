@@ -4,3 +4,5 @@ const reminderEndTime = '22:00';
 const reminderRepeatDays = [1, 2, 3, 4, 5, 6, 7];
 const maxDaysForScheduleNotification = 30;
 const remaningNotificationToSetNew = 3;
+const numberQuoteForMood = 20;
+const maximumQuoteForMoodNotSubscribed = 3;

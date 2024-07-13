@@ -4,6 +4,7 @@ import 'package:motivation_me/features/categories.dart/category_screen.dart';
 import 'package:motivation_me/features/home/home_screen.dart';
 
 import '../features/main_screen/main_screen.dart';
+import '../features/mood_asking/mood_asking_screen.dart';
 import '../features/my_quotes/my_quotes_screen.dart';
 import '../features/themes/themes_screen.dart';
 import 'app_routes.dart';
@@ -15,6 +16,10 @@ final appRouters = GoRouter(
   navigatorKey: navigatorKey,
   initialLocation: Routes.mainScreen,
   routes: <RouteBase>[
+    GoRoute(
+        name: Routes.moodAsking,
+        path: Routes.moodAsking,
+        builder: (context, state) => const MoodAskingScreen()),
     GoRoute(
         name: Routes.mainScreen,
         path: Routes.mainScreen,

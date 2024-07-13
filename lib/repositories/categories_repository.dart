@@ -29,6 +29,16 @@ class CategoriesRepository {
       return QuoteCategory.fromMap(maps[i]);
     });
   }
+
+  Future<int?> getCategoryIdFromTag(String tag) async {
+    final db = await _dbHelper.database;
+    final ids = await db
+        .query('categories', where: 'category_tag = ?', whereArgs: [tag]);
+    if (ids.isNotEmpty) {
+      return ids.first['id'] as int;
+    }
+    return null;
+  }
 }
 
 @riverpod

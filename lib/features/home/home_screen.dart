@@ -526,9 +526,11 @@ class FavoriteButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return IconButton(
-      onPressed: () => ref
-          .read(homeControllerProvider(quoteId: quoteId).notifier)
-          .toggleLikeQuote(quote, index),
+      onPressed: () {
+        ref
+            .read(homeControllerProvider(quoteId: quoteId).notifier)
+            .toggleLikeQuote(quote, index);
+      },
       icon: Icon(
         quote.isLiked ? Icons.favorite : Icons.favorite_border,
         color: Colors.white,

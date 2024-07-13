@@ -125,4 +125,22 @@ class ConfigurationStorage {
   static int getOpenAppCount() {
     return _box.read('openAppCount') ?? 0;
   }
+
+  //create static function to check today user has opened the app or not
+  // just get date, month, year without time
+  static bool isTodayOpenedApp() {
+    final lastOpenAppDate = getLastOpenAppDate();
+    final today = DateTime.now();
+    final todayDate = '${today.year}-${today.month}-${today.day}';
+    return lastOpenAppDate == todayDate;
+  }
+
+  static Future<void> saveLastOpenAppDate(DateTime date) async {
+    await _box.write(
+        'lastOpenAppDate', '${date.year}-${date.month}-${date.day}');
+  }
+
+  static String getLastOpenAppDate() {
+    return _box.read('lastOpenAppDate') ?? '';
+  }
 }
